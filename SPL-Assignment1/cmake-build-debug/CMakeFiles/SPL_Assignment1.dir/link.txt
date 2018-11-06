@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/SPL_Assignment1.dir/main.cpp.o CMakeFiles/SPL_Assignment1.dir/src/Table.cpp.o CMakeFiles/SPL_Assignment1.dir/src/Restaurant.cpp.o CMakeFiles/SPL_Assignment1.dir/src/Dish.cpp.o CMakeFiles/SPL_Assignment1.dir/src/Customer.cpp.o CMakeFiles/SPL_Assignment1.dir/src/Action.cpp.o  -o SPL_Assignment1 

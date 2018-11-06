@@ -1,0 +1,3 @@
+/home/dor/CLion/SPL-Assignment1/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/dor/CLion/SPL-Assignment1/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/dor/CLion/SPL-Assignment1/cmake-build-debug/CMakeFiles/SPL_Assignment1.dir
