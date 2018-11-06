@@ -1,3 +1,4 @@
+#include <iostream>
 #include "../include/Customer.h"
 
 Customer :: Customer(std :: string c_name, int c_id) : name(c_name), id(c_id){}
@@ -31,7 +32,9 @@ std::vector<int> VegetarianCustomer :: order(const std::vector<Dish> &menu){
     return Strategy;
 }
 
-std::string VegetarianCustomer :: toString() const;
+std::string VegetarianCustomer :: toString() const{
+    std::cout << this->getId() << " " << this->getName() << std::endl;
+}
 
 
 
@@ -52,7 +55,7 @@ std::vector<int> CheapCustomer :: order(const std::vector<Dish> &menu){
     return Strategy;
 }
 std::string CheapCustomer :: toString() const {
-    return getName() + getId() + "CheapCustomer";
+    std::cout << this->getId() << " " << this->getName() << std::endl;
 }
 
 
@@ -89,7 +92,9 @@ std::vector<int> SpicyCustomer :: order(const std::vector<Dish> &menu){
     ordered = true;
     return Strategy;
 }
-std::string SpicyCustomer :: toString() const;
+std::string SpicyCustomer :: toString() const{
+    std::cout << this->getId() << " " << this->getName() << std::endl;
+}
 
 
 
@@ -130,4 +135,6 @@ std::vector<int> AlchoholicCustomer :: order(const std::vector<Dish> &menu){
     return Strategy;
 }
 
-std::string AlchoholicCustomer :: toString() const;
+std::string AlchoholicCustomer :: toString() const{
+    std::cout << this->getId() << " " << this->getName() << std::endl;
+}
