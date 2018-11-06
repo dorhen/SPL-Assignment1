@@ -62,6 +62,11 @@ void Table::openTable() {
 
 void Table::closeTable() {
     orderList.clear();
+    Customer *c;
+    for(auto &customer : customersList){
+        c = customer;
+        delete c;
+    }
     customersList.clear();
     open = false;
 }
