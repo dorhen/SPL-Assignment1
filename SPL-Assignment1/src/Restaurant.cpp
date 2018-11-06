@@ -202,3 +202,66 @@ DishType Restaurant::convert(string str){
     else if(str == "BVG") return BVG;
     else return ALC;
 }
+
+/*
+void copy(const Restaurant& other){
+    open = other.open;
+    for(i = 0; i< other.tables.size(); i++)
+        tables[i] = new Table(other.tables[i]);
+    menu(other.menu);
+    for(i =0; i<other.actionsLog.size(); i++)
+        actionsLog[i] = new BaseAction(other.actionsLog[i]);
+}
+ void steal(Restaurant& other){
+    open = other.open;
+    tables = other.tables;
+    other.tables = nullptr;
+    menu = other.menu;
+    other.menu = nullptr;
+    actionsLog = other.actionsLog;
+    other.actionsLog = nullptr;
+}
+
+
+void clean(){
+    for(i = 0; i < tables.size(); i++){
+        delete tables[i];
+    }
+    delete tables;
+    delete menu;
+    for(i = 0; i < actionsLog.size(); i++){
+        delete actionsLog[i];
+    }
+    actionsLog delete;
+    open = false;
+}
+ virtual ~Restaurant(){
+    for(i = 0; i < tables.size(); i++){
+        delete tables[i];
+    }
+    delete tables;
+    for(i = 0; i < actionsLog.size(); i++){
+        delete actionsLog[i];
+    }
+    actionsLog delete;
+}
+ Restaurant(const Restaurant& rhs){
+    copy(rhs)
+}
+ Restaurant& operator=(const Restaurant& rhs){
+    if(&rhs != this)
+    {
+        this.clean();
+        copy(rhs)
+    }
+    return *this;
+
+}
+ Restaurant(const Restaurant&& rhs){
+    steal(rhs)
+}
+ Restaurant& operator=(const Restaurant&& rhs){
+    clean();
+    steal(rhs);
+    return *this;
+}*/

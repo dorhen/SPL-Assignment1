@@ -1,6 +1,8 @@
 #include "../include/Action.h"
 #include "../include/Table.h"
+#include "../include/Restaurant.h"
 #include <iostream>
+extern Restaurant* backup;
 
 //BaseAction
 
@@ -46,9 +48,9 @@ void OpenTable::act(Restaurant &restaurant) {
 }
 std::string OpenTable::toString() const {
     if(this->getStatus() == 2)
-        std::cout << "open " <<  this->getArgs() << " Error: " << this->getErrorMsg() << std::endl;
+        return "open " +  this->getArgs() + " Error: " + this->getErrorMsg();
     else
-        std::cout << "open " << this->getArgs() << "Completed" << std::endl;
+        return "open " + this->getArgs() + "Completed";
 }
 
 
@@ -69,9 +71,9 @@ void Order::act(Restaurant &restaurant) {
 }
 std::string Order::toString() const {
     if(this->getStatus() == 2)
-        std::cout << "order " <<  this->getArgs() << " Error: " << this->getErrorMsg() << std::endl;
+        return "order " +  this->getArgs() + " Error: " + this->getErrorMsg();
     else
-        std::cout << "order " << this->getArgs() << "Completed" << std::endl;
+        return "order " + this->getArgs() + "Completed" ;
 }
 
 
@@ -86,7 +88,7 @@ void MoveCustomer::act(Restaurant &restaurant) {
     if(!t1 || !(t1->isOpen()) || !t2 || !(t2->isOpen()) || t2->getCapacity() == t2->getCurrentSize() || !t1->getCustomer(this->id))
         this->error("Cannot move customer");
     else {
-        t2.addCustomer(t1.getCustomer(this->id));
+        t2->addCustomer(t1->getCustomer(this->id));
         std::vector<OrderPair> toMove = t1->removeOrders(this->id);
         for (const auto &i : toMove)
             t2->addOrder(i);
@@ -96,9 +98,9 @@ void MoveCustomer::act(Restaurant &restaurant) {
 }
 std::string MoveCustomer::toString() const {
     if(this->getStatus() == 2)
-        std::cout << "move " <<  this->getArgs() << " Error: " << this->getErrorMsg() << std::endl;
+        return "move " +  this->getArgs() + " Error: " + this->getErrorMsg();
     else
-        std::cout << "move " << this->getArgs() << "Completed" << std::endl;
+        return "move " + this->getArgs() + "Completed" ;
 }
 
 
@@ -120,9 +122,9 @@ void Close::act(Restaurant &restaurant){
 }
 std::string Close::toString() const {
     if(this->getStatus() == 2)
-        std::cout << "close " <<  this->getArgs() << " Error: " << this->getErrorMsg() << std::endl;
+        return "close " +  this->getArgs() + " Error: " + this->getErrorMsg();
     else
-        std::cout << "close " << this->getArgs() << "Completed" << std::endl;
+        return "close " + this->getArgs() + "Completed";
 }
 
 
@@ -146,7 +148,7 @@ void CloseAll::act(Restaurant &restaurant) {
     complete();
 }
 std::string CloseAll::toString() const {
-    std::cout << "closeall" << " Completed" << std::endl;
+    return "closeall Completed";
 }
 
 
@@ -162,7 +164,7 @@ void PrintMenu::act(Restaurant &restaurant) {
     complete();
 }
 std::string PrintMenu::toString() const {
-    std::cout << "menu" << " Completed" <<  std::endl;
+    return "menu Completed";
 }
 
 
@@ -188,7 +190,7 @@ void PrintTableStatus::act(Restaurant &restaurant) {
     }
 }
 std::string PrintTableStatus::toString() const {
-    std::cout << "menu" << this->getArgs() << " Completed" <<  std::endl;
+    return "menu" + this->getArgs() + " Completed";
 }
 
 
@@ -205,5 +207,30 @@ void PrintActionsLog::act(Restaurant &restaurant) {
     complete();
 }
 std::string PrintActionsLog::toString() const {
-    std::cout << "log" << " Completed" <<  std::endl;
+    return "log Completed";
+}
+
+//Backup
+
+//Constructor
+BackupRestaurant::BackupRestaurant(): BaseAction() {}
+//Methods
+void BackupRestaurant::act(Restaurant &restaurant) {
+    backup = new Restaurant(restaurant);
+    complete();
+}
+std::string BackupRestaurant::toString() const {
+    return "backup Completed";
+}
+
+//Restore
+//Constructor
+RestoreResturant::RestoreResturant(): BaseAction(){}
+//Methods
+void RestoreResturant::act(Restaurant &restaurant) {
+    restaurant = *backup;
+    complete();
+}
+std::string RestoreResturant::toString() const {
+    return "restore Completed";
 }
