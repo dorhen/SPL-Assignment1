@@ -63,16 +63,120 @@ Restaurant::Restaurant(const string &configFilePath): open(true){
     inFile.close();
 }
 
-void start(){
+void Restaurant::start(){
     std::cout << "Restaurant is now open!" << std::endl;
     std::string command;
     std::string action;
+    std::string args;
+    Restaurant &me=*this;
     cin >> command;
-    action = command.substr(command.find_first_of(' '),0);
-    while (command !="closeall"){
-        switch(action) {
-            case "Open Table" :
-
+    action = command.substr(0,command.find_first_of(" "));
+    command = command.substr(command.find_first_of(" ")+1,command.length());
+    args = command;
+    while (action !="closeall"){
+        if(action == "open"){
+            int t_id = std::stoi(command.substr(0,command.find_first_of(" ")));
+            int c_id=0;
+            std::vector<Customer *> customersList;
+            std::string name;
+            std::string strategy;
+            command = command.substr(command.find_first_of(" ")+1, command.length());
+            while(command.length()>0){
+                name = command.substr(0,command.find_first_of(","));
+                command = command.substr(command.find_first_of(",")+1,command.length());
+                strategy = command.substr(0,command.find_first_of(' '));
+                command = command.substr(command.find_first_of(" ")+1,command.length());
+                if(strategy == "veg")
+                    customersList.push_back(new VegetarianCustomer(name,c_id));
+                else if(strategy == "chp")
+                    customersList.push_back(new CheapCustomer(name,c_id));
+                else if(strategy == "spc")
+                    customersList.push_back(new SpicyCustomer(name,c_id));
+                else if(strategy == "alc")
+                    customersList.push_back(new AlchoholicCustomer(name,c_id));
+                c_id++;
+            }
+            OpenTable *OT = new OpenTable(t_id,customersList);
+            OT->updateArgs(args);
+            OT->act(me);
+            actionsLog.push_back(OT);
+            cin >> command;
+            action = command.substr(0,command.find_first_of(" "));
+            command = command.substr(command.find_first_of(" ")+1,command.length());
+            args = command;
+            continue;
+        }
+        else if(action == "order"){
+            int t_id = std::stoi(command.substr(0,command.length()));
+            Order *O=new Order(t_id);
+            O->updateArgs(args);
+            O->act(me);
+            actionsLog.push_back(O);
+            cin >> command;
+            action = command.substr(0,command.find_first_of(" "));
+            command = command.substr(command.find_first_of(" ")+1,command.length());
+            args = command;
+            continue;
+        }
+        else if(action == "move"){
+            int ori =std::stoi(command.substr(0,command.find_first_of(" ")));
+            command = command.substr(command.find_first_of(" ")+1,command.length());
+            int des =std::stoi(command.substr(0,command.find_first_of(" ")));
+            command = command.substr(command.find_first_of(" ")+1,command.length());
+            int cus =std::stoi(command.substr(0,command.length()));
+            MoveCustomer *MC=new MoveCustomer(ori,des,cus);
+            MC->updateArgs(args);
+            MC->act(me);
+            actionsLog.push_back(MC);
+            cin >> command;
+            action = command.substr(0,command.find_first_of(" "));
+            command = command.substr(command.find_first_of(" ")+1,command.length());
+            args = command;
+            continue;
+        }
+        else if(action == "close"){
+            int t_id =std::stoi(command.substr(0,command.length()));
+            Close *C=new Close(t_id);
+            C->updateArgs(args);
+            C->act(me);
+            actionsLog.push_back(C);
+            cin >> command;
+            action = command.substr(0,command.find_first_of(" "));
+            command = command.substr(command.find_first_of(" ")+1,command.length());
+            args = command;
+            continue;
+        }
+        else if(action == "menu"){
+            PrintMenu *PM=new PrintMenu();
+            PM->act(me);
+            actionsLog.push_back(PM);
+            cin >> command;
+            action = command.substr(0,command.find_first_of(" "));
+            command = command.substr(command.find_first_of(" ")+1,command.length());
+            args = command;
+            continue;
+        }
+        else if(action == "status"){
+            int t_id =std::stoi(command.substr(0,command.length()));
+            PrintTableStatus *Stat=new PrintTableStatus(t_id);
+            Stat->updateArgs(args);
+            Stat->act(me);
+            actionsLog.push_back(Stat);
+            cin >> command;
+            action = command.substr(0,command.find_first_of(" "));
+            command = command.substr(command.find_first_of(" ")+1,command.length());
+            args = command;
+            continue;
+        }
+        else if(action == "log"){
+            PrintActionsLog *log=new PrintActionsLog();
+            log->act(me);
+            actionsLog.push_back(log);
+            cin >> command;
+            action = command.substr(0,command.find_first_of(" "));
+            command = command.substr(command.find_first_of(" ")+1,command.length());
+            args = command;
+            continue;
         }
     }
 
