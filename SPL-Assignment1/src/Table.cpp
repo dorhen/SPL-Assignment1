@@ -2,9 +2,51 @@
 #include <iostream>
 #include <vector>
 
-
+//constructor
 Table::Table(int t_capacity): capacity(t_capacity), open(false) {}
 
+//rule of 5
+void Table:: copy(const Table& rhs){
+    capacity=rhs.getCapacity();
+    open = rhs.status();
+    for(size_t i=0;i<rhs.getCurrentSize();i++){
+        customersList.push_back(rhs.customersList[i]->clone());
+    }
+    orderList = rhs.orderList;
+}
+void Table:: clear(){
+    for(size_t i=0;i<customersList.size();i++){
+        delete customersList[i];
+    }
+    customersList.clear();
+    orderList.clear();
+}
+void Table::steal(Table& other){
+    capacity = other.getCapacity();
+    open=other.status();
+    customersList=other.getCustomers();
+    orderList=other.getOrders();
+    other.customersList = nullptr;
+}
+Table::~Table(){
+    clear();
+}
+Table::Table(const Table& rhs){
+    copy(rhs);
+}
+Table& Table::operator=(const Table& rhs) {
+    if (&rhs != this) {
+        clear();
+        copy(rhs);
+    }
+    return *this;
+}
+Table::Table(Table&& other){
+    steal(other);
+}
+
+
+//methods
 int Table::getCapacity() const {
     return capacity;
 }
@@ -49,8 +91,8 @@ void Table::order(const std::vector<Dish> &menu) {
     for (size_t i = 0; i < customersList.size(); i++) {
         v = (*customersList[i]).order(menu);
         for (size_t j = 0; j < v.size(); j++) {
-            s += customersList[i].getName() + " ordered" + menu[v[j]].getName() + "/n";
-            orderList.push_back(OrderPair(customersList[i].getId(), menu[v[j]]));
+            s += customersList[i]->getName() + " ordered" + menu[v[j]].getName() + "/n";
+            orderList.push_back(OrderPair(customersList[i]->getId(), menu[v[j]]));
         }
     }
     std::cout << s << std::endl;
@@ -96,5 +138,8 @@ std::vector<OrderPair> Table::removeOrders(int id){
 
 void Table::addOrder(OrderPair p){
     orderList.push_back(p);
+}
+bool Table::status() const{
+    return open;
 }
 
