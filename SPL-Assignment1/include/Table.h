@@ -24,6 +24,15 @@ public:
     int getCurrentSize() const;
     std::vector<OrderPair> removeOrders(int id);
     void addOrder(OrderPair P);
+    bool status() const;
+    void copy(const Table& rhs);
+    void clear();
+    void steal(Table& other);
+    Table(Table&& other);
+    virtual ~Table();
+    Table(const Table& rhs);
+    Table& operator=(const Table& rhs);
+    Table& operator=(Table&& other);
 private:
     int capacity;
     bool open;
