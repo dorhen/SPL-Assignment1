@@ -273,7 +273,7 @@ Restaurant::~Restaurant(){
     actionsLog.clear();
 }
 //Deep copy c'tor
-Restaurant::Restaurant(const Restaurant& rhs){
+Restaurant::Restaurant(const Restaurant& rhs):open(), tables(), menu(), actionsLog(){
     this->copy(rhs);
 }
 //Copy assignment op'.
@@ -287,7 +287,7 @@ Restaurant& Restaurant::operator=(const Restaurant& rhs){
 
 }
 //Move
-Restaurant::Restaurant(Restaurant&& rhs){
+Restaurant::Restaurant(Restaurant&& rhs):open(), tables(), menu(), actionsLog(){
     steal(rhs);
 }
 //Move assignment op'.
