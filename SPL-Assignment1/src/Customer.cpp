@@ -13,98 +13,104 @@ int Customer :: getId() const{
 
 
 
-VegetarianCustomer :: VegetarianCustomer(std::string name, int id): Customer(name, id),  Strategy(-1,-1){
+VegetarianCustomer :: VegetarianCustomer(std::string name, int id): Customer(name, id){
+    strategy.push_back(-1);
+    strategy.push_back(-1);
 }
 std::vector<int> VegetarianCustomer :: order(const std::vector<Dish> &menu){
-    if((Strategy.size() == 2) && (Strategy[0] == -1)){
+    if((strategy.size() == 2) && (strategy[0] == -1)){
         int expBVG = -1;
-        for(size_t i=0 ; i < menu.size() ; i++){
-            if ((Strategy[0]==-1) && (menu[i].getType() == VEG))
-                Strategy[0] = i;
+        for(int i=0 ; i < menu.size() ; i++){
+            if ((strategy[0]==-1) && (menu[i].getType() == VEG))
+                strategy[0] = i;
             if ((menu[i].getType() == BVG) && (menu[i].getPrice() > expBVG)){
-                Strategy[1] = i;
+                strategy[1] = i;
                 expBVG = menu[i].getPrice();
             }
         }
-        if((Strategy[1] == -1)  || (Strategy[0] == -1))
-            Strategy.clear();
+        if((strategy[1] == -1)  || (strategy[0] == -1))
+            strategy.clear();
     }
-    return Strategy;
+    return strategy;
 }
 
 std::string VegetarianCustomer :: toString() const{
     return std::to_string(this->getId()) + " " + this->getName();
 }
 Customer* VegetarianCustomer:: clone(){
-    Customer* c=new VegetarianCustomer(name,id);
+    Customer* c=new VegetarianCustomer(getName(), getId());
     return c;
 }
 
 
 
-CheapCustomer :: CheapCustomer(std::string name, int id) : Customer(name, id), Strategy(-1), ordered(false){}
+CheapCustomer :: CheapCustomer(std::string name, int id) : Customer(name, id), ordered(false){
+    strategy.push_back(-1);
+}
 std::vector<int> CheapCustomer :: order(const std::vector<Dish> &menu){
-    if((!ordered) && (menu.size() > 0)){
+    if((!ordered) && (!menu.empty())){
         int cheapest = -1;
-        for(size_t i=0 ; i < menu.size() ; i++){
+        for(int i=0 ; i < menu.size() ; i++){
             if((menu[i].getPrice() < cheapest) || (cheapest == -1)){
                 cheapest = menu[i].getPrice();
-                Strategy[0] = i;
+                strategy[0] = i;
             }
         }
         ordered=true;
-        return Strategy;
+        return strategy;
     }
-    Strategy.clear();
-    return Strategy;
+    strategy.clear();
+    return strategy;
 }
 std::string CheapCustomer :: toString() const {
     return std::to_string(this->getId()) + " " + this->getName();
 }
 Customer* CheapCustomer:: clone(){
-    Customer* c=new CheapCustomer(name,id);
+    Customer* c=new CheapCustomer(getName(), getId());
     return c;
 }
 
 
 
 
-SpicyCustomer :: SpicyCustomer(std::string name, int id) : Customer(name, id), Strategy(-1), ordered(false) {}
+SpicyCustomer :: SpicyCustomer(std::string name, int id) : Customer(name, id), ordered(false) {
+    strategy.push_back(-1);
+}
 std::vector<int> SpicyCustomer :: order(const std::vector<Dish> &menu){
-    if((ordered) && (menu[Strategy[0]].getType() == BVG))
-        return Strategy;
+    if((ordered) && (menu[strategy[0]].getType() == BVG))
+        return strategy;
     else if(ordered){
         int cheapest=-1;
-        for(size_t i=0 ; i < menu.size() ; i++){
+        for(int i=0 ; i < menu.size() ; i++){
             if(menu[i].getType() == BVG){
                 if((menu[i].getPrice() < cheapest) || (cheapest == -1)){
                     cheapest = menu[i].getPrice();
-                    Strategy[0] = i;
+                    strategy[0] = i;
                 }
             }
         }
         if(cheapest == -1){
-            Strategy.clear();
-            return Strategy;
+            strategy.clear();
+            return strategy;
         }
     }
     int exp=0;
-    for(size_t i=0;i<menu.size();i++){
+    for(int i=0;i<menu.size();i++){
         if((menu[i].getType()==SPC) && (menu[i].getPrice()>exp)){
             exp = menu[i].getPrice();
-            Strategy[0]=i;
+            strategy[0]=i;
         }
     }
     if(exp == 0)
-        Strategy.clear();
+        strategy.clear();
     ordered = true;
-    return Strategy;
+    return strategy;
 }
 std::string SpicyCustomer :: toString() const{
     return std::to_string(this->getId()) + " " + this->getName();
 }
 Customer* SpicyCustomer:: clone(){
-    Customer* c=new SpicyCustomer(name,id);
+    Customer* c=new SpicyCustomer(getName(), getId());
     return c;
 }
 
@@ -114,44 +120,51 @@ Customer* SpicyCustomer:: clone(){
 AlchoholicCustomer :: AlchoholicCustomer(std::string name, int id) : Customer(name, id), current(0) {}
 void AlchoholicCustomer :: Sort(){
     std::vector<Dish> Sorted;
-    int i=1;
-    Sorted.resize(Drinks.size());
-    Sorted[0]=Drinks[0];
-    while(i<Drinks.size()){
-        int j=i-1;
-        while(Drinks[i].getPrice()<Sorted[j].getPrice()){
-            Sorted[j+1]=Sorted[j];
-            j--;
-        }
-        Sorted[j+1]=Drinks[i];
-        i++;
+    int min;
+    while(!Drinks.empty()){
+        min=findMin(Drinks);
+        Sorted.push_back(Drinks[min]);
+        Drinks.erase(Drinks.begin()+min);
     }
-    Drinks = Sorted; //not sure
+    for(size_t i=0 ; i<Drinks.size();i++){
+        Drinks.push_back(Sorted[i]);
+    }
+}
+int AlchoholicCustomer:: findMin(std::vector<Dish> v){
+    int min=v[0].getPrice();
+    int id=0;
+    for(int i=1;i<v.size();i++){
+        if(v[i].getPrice()<min){
+            min=v[i].getPrice();
+            id=i;
+        }
+    }
+    return id;
 }
 std::vector<int> AlchoholicCustomer :: order(const std::vector<Dish> &menu){
     if(current>0){
         if(current<Drinks.size()){
-            Strategy[0]=Drinks[current].getId();
+            strategy[0]=Drinks[current].getId();
             current++;
         }
-        else Strategy.clear();
-        return Strategy;
+        else strategy.clear();
+        return strategy;
     }
-    for(size_t i=0 ; i < menu.size() ; i++){
+    for(int i=0 ; i < menu.size() ; i++){
         if(menu[i].getType()==ALC)
             Drinks.push_back(menu[i]);
     }
     Sort();
-    Strategy.push_back(Drinks[current].getId());
+    strategy.push_back(Drinks[current].getId());
     current++;
-    return Strategy;
+    return strategy;
 }
 
 std::string AlchoholicCustomer :: toString() const{
     return std::to_string(this->getId()) + " " + this->getName();
 }
 Customer* AlchoholicCustomer:: clone(){
-    Customer* c=new AlchoholicCustomer(name,id);
+    Customer* c=new AlchoholicCustomer(getName(), getId());
     return c;
 }
 
