@@ -12,7 +12,8 @@ void Table:: copy(const Table& rhs){
     for(size_t i=0;i<rhs.getCurrentSize();i++){
         customersList.push_back(rhs.customersList[i]->clone());
     }
-    orderList = rhs.orderList;
+    for(auto &i : orderList)
+        orderList.emplace_back(i.first,i.second);
 }
 void Table:: clear(){
     for (auto &i : customersList) {
@@ -22,10 +23,11 @@ void Table:: clear(){
     orderList.clear();
 }
 void Table::steal(Table& other){
-    capacity = other.getCapacity();
+    capacity = other.capacity;
     open=other.status();
-    customersList=other.getCustomers();
-    orderList=other.getOrders();
+    customersList=other.customersList;
+    for(auto &i : orderList)
+        orderList.emplace_back(i.first,i.second);
     other.customersList.clear();
     other.getOrders().clear();
 }
@@ -61,7 +63,7 @@ int Table::getCapacity() const {
 }
 
 void Table::addCustomer(Customer *customer) {
-customersList.push_back(customer);
+    customersList.push_back(customer);
 }
 
 void Table::removeCustomer(int id) {
@@ -152,4 +154,3 @@ void Table::addOrder(OrderPair p){
 bool Table::status() const{
     return open;
 }
-
