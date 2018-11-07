@@ -1,145 +1,157 @@
-#include "../include/Table.h"
 #include <iostream>
-#include <vector>
+#include "../include/Customer.h"
 
-//constructor
-Table::Table(int t_capacity): capacity(t_capacity), open(false) {}
+Customer :: Customer(std :: string c_name, int c_id) : name(c_name), id(c_id){}
 
-//rule of 5
-void Table:: copy(const Table& rhs){
-    capacity=rhs.getCapacity();
-    open = rhs.status();
-    for(size_t i=0;i<rhs.getCurrentSize();i++){
-        customersList.push_back(rhs.customersList[i]->clone());
+
+std::string Customer :: getName() const{
+    return name;
+}
+int Customer :: getId() const{
+    return id;
+}
+
+
+
+VegetarianCustomer :: VegetarianCustomer(std::string name, int id): Customer(name, id),  Strategy(-1,-1){
+}
+std::vector<int> VegetarianCustomer :: order(const std::vector<Dish> &menu){
+    if((Strategy.size() == 2) && (Strategy[0] == -1)){
+        int expBVG = -1;
+        for(size_t i=0 ; i < menu.size() ; i++){
+            if ((Strategy[0]==-1) && (menu[i].getType() == VEG))
+                Strategy[0] = i;
+            if ((menu[i].getType() == BVG) && (menu[i].getPrice() > expBVG)){
+                Strategy[1] = i;
+                expBVG = menu[i].getPrice();
+            }
+        }
+        if((Strategy[1] == -1)  || (Strategy[0] == -1))
+            Strategy.clear();
     }
-    orderList = rhs.orderList;
+    return Strategy;
 }
-void Table:: clear(){
-    for(size_t i=0;i<customersList.size();i++){
-        delete customersList[i];
+
+std::string VegetarianCustomer :: toString() const{
+    return std::to_string(this->getId()) + " " + this->getName();
+}
+Customer* VegetarianCustomer:: clone(){
+    Customer* c=new VegetarianCustomer(name,id);
+    return c;
+}
+
+
+
+CheapCustomer :: CheapCustomer(std::string name, int id) : Customer(name, id), Strategy(-1), ordered(false){}
+std::vector<int> CheapCustomer :: order(const std::vector<Dish> &menu){
+    if((!ordered) && (menu.size() > 0)){
+        int cheapest = -1;
+        for(size_t i=0 ; i < menu.size() ; i++){
+            if((menu[i].getPrice() < cheapest) || (cheapest == -1)){
+                cheapest = menu[i].getPrice();
+                Strategy[0] = i;
+            }
+        }
+        ordered=true;
+        return Strategy;
     }
-    customersList.clear();
-    orderList.clear();
+    Strategy.clear();
+    return Strategy;
 }
-void Table::steal(Table& other){
-    capacity = other.getCapacity();
-    open=other.status();
-    customersList=other.getCustomers();
-    orderList=other.getOrders();
-    other.customersList = nullptr;
+std::string CheapCustomer :: toString() const {
+    return std::to_string(this->getId()) + " " + this->getName();
 }
-Table::~Table(){
-    clear();
-}
-Table::Table(const Table& rhs){
-    copy(rhs);
-}
-Table& Table::operator=(const Table& rhs) {
-    if (&rhs != this) {
-        clear();
-        copy(rhs);
-    }
-    return *this;
-}
-Table::Table(Table&& other){
-    steal(other);
+Customer* CheapCustomer:: clone(){
+    Customer* c=new CheapCustomer(name,id);
+    return c;
 }
 
 
-//methods
-int Table::getCapacity() const {
-    return capacity;
-}
 
-void Table::addCustomer(Customer *customer) {
-customersList.push_back(customer);
-}
 
-void Table::removeCustomer(int id) {
-    for (size_t i = 0; i < customersList.size(); i++) {
-        if ((*customersList[i]).getId() == id)
-            customersList.erase(customersList.begin()+i);
-    }
-}
-
-int Table::getCurrentSize() const {
-    return customersList.size();
-}
-
-Customer* Table::getCustomer(int id) {
-    Customer* ans = nullptr;
-    for (size_t i = 0; i < customersList.size(); i++) {
-        if ((*customersList[i]).getId() == id)
-            ans = customersList[i];
-    }
-    return ans;
-}
-
-std::vector<Customer *>& Table::getCustomers() {
-    std::vector < Customer * > &ans = customersList;
-    return ans;
-}
-
-std::vector<OrderPair>& Table::getOrders() {
-    std::vector <OrderPair> &ans = orderList;
-    return ans;
-}
-
-void Table::order(const std::vector<Dish> &menu) {
-    std::vector<int> v;
-    std::string s;
-    for (size_t i = 0; i < customersList.size(); i++) {
-        v = (*customersList[i]).order(menu);
-        for (size_t j = 0; j < v.size(); j++) {
-            s += customersList[i]->getName() + " ordered" + menu[v[j]].getName() + "/n";
-            orderList.push_back(OrderPair(customersList[i]->getId(), menu[v[j]]));
+SpicyCustomer :: SpicyCustomer(std::string name, int id) : Customer(name, id), Strategy(-1), ordered(false) {}
+std::vector<int> SpicyCustomer :: order(const std::vector<Dish> &menu){
+    if((ordered) && (menu[Strategy[0]].getType() == BVG))
+        return Strategy;
+    else if(ordered){
+        int cheapest=-1;
+        for(size_t i=0 ; i < menu.size() ; i++){
+            if(menu[i].getType() == BVG){
+                if((menu[i].getPrice() < cheapest) || (cheapest == -1)){
+                    cheapest = menu[i].getPrice();
+                    Strategy[0] = i;
+                }
+            }
+        }
+        if(cheapest == -1){
+            Strategy.clear();
+            return Strategy;
         }
     }
-    std::cout << s << std::endl;
-}
-
-void Table::openTable() {
-    open = true;
-}
-
-void Table::closeTable() {
-    orderList.clear();
-    Customer *c;
-    for(auto &customer : customersList){
-        c = customer;
-        delete c;
-    }
-    customersList.clear();
-    open = false;
-}
-
-int Table::getBill() {
-    int bill = 0;
-    for (size_t i = 0; i < orderList.size(); i++) {
-        bill += orderList[i].second.getPrice();
-    }
-    return bill;
-}
-
-bool Table::isOpen() {
-    return open;
-}
-
-std::vector<OrderPair> Table::removeOrders(int id){
-    std::vector<OrderPair> idOrders;
-    for(size_t i = 0; i< orderList.size(); i++){
-        if(orderList[i].first == id){
-            idOrders.push_back(OrderPair(id,orderList[i].second));
-            orderList.erase(orderList.begin()+i);
-            i--;
+    int exp=0;
+    for(size_t i=0;i<menu.size();i++){
+        if((menu[i].getType()==SPC) && (menu[i].getPrice()>exp)){
+            exp = menu[i].getPrice();
+            Strategy[0]=i;
         }
     }
+    if(exp == 0)
+        Strategy.clear();
+    ordered = true;
+    return Strategy;
+}
+std::string SpicyCustomer :: toString() const{
+    return std::to_string(this->getId()) + " " + this->getName();
+}
+Customer* SpicyCustomer:: clone(){
+    Customer* c=new SpicyCustomer(name,id);
+    return c;
 }
 
-void Table::addOrder(OrderPair p){
-    orderList.push_back(p);
+
+
+
+AlchoholicCustomer :: AlchoholicCustomer(std::string name, int id) : Customer(name, id), current(0) {}
+void AlchoholicCustomer :: Sort(){
+    std::vector<Dish> Sorted;
+    int i=1;
+    Sorted.resize(Drinks.size());
+    Sorted[0]=Drinks[0];
+    while(i<Drinks.size()){
+        int j=i-1;
+        while(Drinks[i].getPrice()<Sorted[j].getPrice()){
+            Sorted[j+1]=Sorted[j];
+            j--;
+        }
+        Sorted[j+1]=Drinks[i];
+        i++;
+    }
+    Drinks = Sorted; //not sure
 }
-bool Table::status() const{
-    return open;
+std::vector<int> AlchoholicCustomer :: order(const std::vector<Dish> &menu){
+    if(current>0){
+        if(current<Drinks.size()){
+            Strategy[0]=Drinks[current].getId();
+            current++;
+        }
+        else Strategy.clear();
+        return Strategy;
+    }
+    for(size_t i=0 ; i < menu.size() ; i++){
+        if(menu[i].getType()==ALC)
+            Drinks.push_back(menu[i]);
+    }
+    Sort();
+    Strategy.push_back(Drinks[current].getId());
+    current++;
+    return Strategy;
+}
+
+std::string AlchoholicCustomer :: toString() const{
+    return std::to_string(this->getId()) + " " + this->getName();
+}
+Customer* AlchoholicCustomer:: clone(){
+    Customer* c=new AlchoholicCustomer(name,id);
+    return c;
 }
 
