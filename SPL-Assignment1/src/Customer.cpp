@@ -1,7 +1,7 @@
 #include <iostream>
 #include "../include/Customer.h"
 
-Customer :: Customer(std :: string c_name, int c_id) : name(c_name), id(c_id){}
+Customer :: Customer(std :: string c_name, int c_id) : name(c_name), id(c_id), Strategy(){}
 
 
 std::string Customer :: getName() const{

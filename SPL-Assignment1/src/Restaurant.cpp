@@ -4,8 +4,9 @@
 #include <sstream>
 using namespace std;
 
+Restaurant::Restaurant(): open(true), tables(), menu(), actionsLog() {}
 
-Restaurant::Restaurant(const string &configFilePath): open(true){
+Restaurant::Restaurant(const string &configFilePath):Restaurant(){
     ifstream inFile;
     inFile.open(configFilePath);
     if(!inFile.is_open()){
@@ -37,13 +38,13 @@ Restaurant::Restaurant(const string &configFilePath): open(true){
                     stringstream num(numWord);
                     int tSize = 0;
                     num >> tSize;
-                    this.tables.push_back(new Table(tSize));
+                    this->tables.push_back(new Table(tSize));
                     break;
                 } else {
                     stringstream num(line);
                     int tSize = 0;
                     num >> tSize;
-                    this.tables.push_back(new Table(tSize));
+                    this->tables.push_back(new Table(tSize));
                     continue;
                 }
             }
@@ -70,22 +71,22 @@ void Restaurant::start(){
     std::string args;
     Restaurant &me=*this;
     cin >> command;
-    action = command.substr(0,command.find_first_of(" "));
-    command = command.substr(command.find_first_of(" ")+1,command.length());
+    action = command.substr(0,command.find_first_of(' '));
+    command = command.substr(command.find_first_of(' ')+1,command.length());
     args = command;
     while (action !="closeall"){
         if(action == "open"){
-            int t_id = std::stoi(command.substr(0,command.find_first_of(" ")));
+            int t_id = std::stoi(command.substr(0,command.find_first_of(' ')));
             int c_id=0;
             std::vector<Customer *> customersList;
             std::string name;
             std::string strategy;
-            command = command.substr(command.find_first_of(" ")+1, command.length());
+            command = command.substr(command.find_first_of(' ')+1, command.length());
             while(command.length()>0){
-                name = command.substr(0,command.find_first_of(","));
-                command = command.substr(command.find_first_of(",")+1,command.length());
+                name = command.substr(0,command.find_first_of(' '));
+                command = command.substr(command.find_first_of(',')+1,command.length());
                 strategy = command.substr(0,command.find_first_of(' '));
-                command = command.substr(command.find_first_of(" ")+1,command.length());
+                command = command.substr(command.find_first_of(' ')+1,command.length());
                 if(strategy == "veg")
                     customersList.push_back(new VegetarianCustomer(name,c_id));
                 else if(strategy == "chp")
@@ -101,8 +102,8 @@ void Restaurant::start(){
             OT->act(me);
             actionsLog.push_back(OT);
             cin >> command;
-            action = command.substr(0,command.find_first_of(" "));
-            command = command.substr(command.find_first_of(" ")+1,command.length());
+            action = command.substr(0,command.find_first_of(' '));
+            command = command.substr(command.find_first_of(' ')+1,command.length());
             args = command;
             continue;
         }
@@ -113,24 +114,24 @@ void Restaurant::start(){
             O->act(me);
             actionsLog.push_back(O);
             cin >> command;
-            action = command.substr(0,command.find_first_of(" "));
-            command = command.substr(command.find_first_of(" ")+1,command.length());
+            action = command.substr(0,command.find_first_of(' '));
+            command = command.substr(command.find_first_of(' ')+1,command.length());
             args = command;
             continue;
         }
         else if(action == "move"){
-            int ori =std::stoi(command.substr(0,command.find_first_of(" ")));
-            command = command.substr(command.find_first_of(" ")+1,command.length());
-            int des =std::stoi(command.substr(0,command.find_first_of(" ")));
-            command = command.substr(command.find_first_of(" ")+1,command.length());
+            int ori =std::stoi(command.substr(0,command.find_first_of(' ')));
+            command = command.substr(command.find_first_of(' ')+1,command.length());
+            int des =std::stoi(command.substr(0,command.find_first_of(' ')));
+            command = command.substr(command.find_first_of(' ')+1,command.length());
             int cus =std::stoi(command.substr(0,command.length()));
             MoveCustomer *MC=new MoveCustomer(ori,des,cus);
             MC->updateArgs(args);
             MC->act(me);
             actionsLog.push_back(MC);
             cin >> command;
-            action = command.substr(0,command.find_first_of(" "));
-            command = command.substr(command.find_first_of(" ")+1,command.length());
+            action = command.substr(0,command.find_first_of(' '));
+            command = command.substr(command.find_first_of(' ')+1,command.length());
             args = command;
             continue;
         }
@@ -141,8 +142,8 @@ void Restaurant::start(){
             C->act(me);
             actionsLog.push_back(C);
             cin >> command;
-            action = command.substr(0,command.find_first_of(" "));
-            command = command.substr(command.find_first_of(" ")+1,command.length());
+            action = command.substr(0,command.find_first_of(' '));
+            command = command.substr(command.find_first_of(' ')+1,command.length());
             args = command;
             continue;
         }
@@ -151,8 +152,8 @@ void Restaurant::start(){
             PM->act(me);
             actionsLog.push_back(PM);
             cin >> command;
-            action = command.substr(0,command.find_first_of(" "));
-            command = command.substr(command.find_first_of(" ")+1,command.length());
+            action = command.substr(0,command.find_first_of(' '));
+            command = command.substr(command.find_first_of(' ')+1,command.length());
             args = command;
             continue;
         }
@@ -163,8 +164,8 @@ void Restaurant::start(){
             Stat->act(me);
             actionsLog.push_back(Stat);
             cin >> command;
-            action = command.substr(0,command.find_first_of(" "));
-            command = command.substr(command.find_first_of(" ")+1,command.length());
+            action = command.substr(0,command.find_first_of(' '));
+            command = command.substr(command.find_first_of(' ')+1,command.length());
             args = command;
             continue;
         }
@@ -173,8 +174,8 @@ void Restaurant::start(){
             log->act(me);
             actionsLog.push_back(log);
             cin >> command;
-            action = command.substr(0,command.find_first_of(" "));
-            command = command.substr(command.find_first_of(" ")+1,command.length());
+            action = command.substr(0,command.find_first_of(' '));
+            command = command.substr(command.find_first_of(' ')+1,command.length());
             args = command;
             continue;
         }
@@ -183,7 +184,7 @@ void Restaurant::start(){
 }
 
 int Restaurant::getNumOfTables() const{
-    return tables.size();
+    return (int)tables.size();
 }
 
 vector<Dish>& Restaurant::getMenu(){
@@ -203,65 +204,70 @@ DishType Restaurant::convert(string str){
     else return ALC;
 }
 
-/*
-void copy(const Restaurant& other){
+
+//Rule of 5
+//Copy
+void Restaurant::copy(const Restaurant& other){
     open = other.open;
-    for(i = 0; i< other.tables.size(); i++)
-        tables[i] = new Table(other.tables[i]);
-    menu(other.menu);
-    for(i =0; i<other.actionsLog.size(); i++)
-        actionsLog[i] = new BaseAction(other.actionsLog[i]);
+    for(int i = 0; i< other.tables.size(); i++)
+        tables[i] = new Table(other.tables[i]->getCapacity());
+    menu = other.menu;
+    for(int i =0; i<other.actionsLog.size(); i++)
+        actionsLog[i] = other.actionsLog[i]->clone();
 }
- void steal(Restaurant& other){
+//Steal
+void Restaurant::steal(Restaurant& other){
     open = other.open;
     tables = other.tables;
-    other.tables = nullptr;
+    other.tables.clear();
     menu = other.menu;
-    other.menu = nullptr;
     actionsLog = other.actionsLog;
-    other.actionsLog = nullptr;
 }
-
-
-void clean(){
-    for(i = 0; i < tables.size(); i++){
-        delete tables[i];
+//Clean
+void Restaurant::clean(){
+    for (auto &table : tables) {
+        delete table;
     }
-    delete tables;
-    delete menu;
-    for(i = 0; i < actionsLog.size(); i++){
-        delete actionsLog[i];
+    tables.clear();
+    menu.clear();
+    for (auto &i : actionsLog) {
+        delete i;
     }
-    actionsLog delete;
+    actionsLog.clear();
     open = false;
 }
- virtual ~Restaurant(){
-    for(i = 0; i < tables.size(); i++){
-        delete tables[i];
+//D'tor
+Restaurant::~Restaurant(){
+    for (auto &table : tables) {
+        delete table;
     }
-    delete tables;
-    for(i = 0; i < actionsLog.size(); i++){
-        delete actionsLog[i];
+    tables.clear();
+    for (auto &i : actionsLog) {
+        delete i;
     }
-    actionsLog delete;
+    actionsLog.clear();
 }
- Restaurant(const Restaurant& rhs){
-    copy(rhs)
+//Deep copy c'tor
+ Restaurant::Restaurant(const Restaurant& rhs){
+    this->copy(rhs);
 }
- Restaurant& operator=(const Restaurant& rhs){
+//Copy assignment op'.
+Restaurant& Restaurant::operator=(const Restaurant& rhs){
     if(&rhs != this)
     {
-        this.clean();
-        copy(rhs)
+        this->clean();
+        copy(rhs);
     }
     return *this;
 
 }
- Restaurant(const Restaurant&& rhs){
-    steal(rhs)
+//Move
+ Restaurant::Restaurant(Restaurant&& rhs){
+    steal(rhs);
 }
- Restaurant& operator=(const Restaurant&& rhs){
+//Move assignment op'.
+Restaurant& Restaurant::operator=(Restaurant&& rhs){
     clean();
     steal(rhs);
     return *this;
-}*/
+}

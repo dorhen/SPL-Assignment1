@@ -1,3 +1,1 @@
-"C:\Program Files\JetBrains\CLion 2018.2.5\bin\cmake\win\bin\cmake.exe" -E remove -f CMakeFiles\SPL_Assignment1.dir/objects.a
-C:\MinGW\bin\ar.exe cr CMakeFiles\SPL_Assignment1.dir/objects.a @CMakeFiles\SPL_Assignment1.dir\objects1.rsp
-C:\MinGW\bin\g++.exe -g   -Wl,--whole-archive CMakeFiles\SPL_Assignment1.dir/objects.a -Wl,--no-whole-archive  -o SPL_Assignment1.exe -Wl,--out-implib,libSPL_Assignment1.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\SPL_Assignment1.dir\linklibs.rsp
+/usr/bin/c++  -g   CMakeFiles/SPL_Assignment1.dir/main.cpp.o CMakeFiles/SPL_Assignment1.dir/src/Table.cpp.o CMakeFiles/SPL_Assignment1.dir/src/Restaurant.cpp.o CMakeFiles/SPL_Assignment1.dir/src/Dish.cpp.o CMakeFiles/SPL_Assignment1.dir/src/Customer.cpp.o CMakeFiles/SPL_Assignment1.dir/src/Action.cpp.o CMakeFiles/SPL_Assignment1.dir/src/main.cpp.o  -o SPL_Assignment1 
