@@ -16,7 +16,6 @@ public:
 private:
     const std::string name;
     const int id;
-    std::vector<int> Strategy;
 };
 
 
@@ -27,6 +26,7 @@ public:
     std::string toString() const;
     virtual Customer* clone();
 private:
+    std::vector<int> strategy;
 };
 
 
@@ -38,6 +38,7 @@ public:
     virtual Customer* clone();
 private:
     bool ordered;
+    std::vector<int> strategy;
 };
 
 
@@ -49,6 +50,7 @@ public:
     virtual Customer* clone();
 private:
     bool ordered;
+    std::vector<int> strategy;
 };
 
 
@@ -59,9 +61,11 @@ public:
     std::string toString() const;
     virtual Customer* clone();
     void Sort();
+    int findMin(std::vector<Dish> v);
 private:
     std::vector<Dish> Drinks;
     int current;
+    std::vector<int> strategy;
 };
 
 
