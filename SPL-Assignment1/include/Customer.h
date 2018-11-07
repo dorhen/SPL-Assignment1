@@ -13,6 +13,7 @@ public:
     std::string getName() const;
     int getId() const;
 private:
+    std::vector<int> Strategy;
     const std::string name;
     const int id;
 };
@@ -24,7 +25,6 @@ public:
     std::vector<int> order(const std::vector<Dish> &menu);
     std::string toString() const;
 private:
-    std::vector<int> Strategy;
 };
 
 
@@ -34,7 +34,6 @@ public:
     std::vector<int> order(const std::vector<Dish> &menu);
     std::string toString() const;
 private:
-    std::vector<int> Strategy;
     bool ordered;
 };
 
@@ -45,7 +44,6 @@ public:
     std::vector<int> order(const std::vector<Dish> &menu);
     std::string toString() const;
 private:
-    std::vector<int> Strategy;
     bool ordered;
 };
 
@@ -57,7 +55,6 @@ public:
     std::string toString() const;
     void Sort();
 private:
-    std::vector<int> Strategy;
     std::vector<Dish> Drinks;
     int current;
 };
