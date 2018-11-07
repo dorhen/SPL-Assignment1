@@ -1,69 +1,43 @@
-#ifndef CUSTOMER_H_
-#define CUSTOMER_H_
+#ifndef TABLE_H_
+#define TABLE_H_
 
 #include <vector>
-#include <string>
+#include "Customer.h"
 #include "Dish.h"
 
-class Customer{
+typedef std::pair<int, Dish> OrderPair;
+
+class Table{
 public:
-    Customer(std::string c_name, int c_id);
-    virtual std::vector<int> order(const std::vector<Dish> &menu)=0;
-    virtual std::string toString() const = 0;
-    virtual Customer* clone() const;
-    std::string getName() const;
-    int getId() const;
+    Table(int t_capacity);
+    int getCapacity() const;
+    void addCustomer(Customer* customer);
+    void removeCustomer(int id);
+    Customer* getCustomer(int id);
+    std::vector<Customer*>& getCustomers();
+    std::vector<OrderPair>& getOrders();
+    void order(const std::vector<Dish> &menu);
+    void openTable();
+    void closeTable();
+    int getBill();
+    bool isOpen();
+    int getCurrentSize() const;
+    std::vector<OrderPair> removeOrders(int id);
+    void addOrder(OrderPair P);
+    bool status() const;
+    void copy(const Table& rhs);
+    void clear();
+    void steal(Table& other);
+    Table(Table&& other);
+    virtual ~Table();
+    Table(const Table& rhs);
+    Table& operator=(const Table& rhs);
 private:
-    const std::string name;
-    const int id;
-    std::vector<int> Strategy;
-};
-
-
-class VegetarianCustomer : public Customer {
-public:
-    VegetarianCustomer(std::string name, int id);
-    std::vector<int> order(const std::vector<Dish> &menu);
-    std::string toString() const;
-    virtual Customer* clone();
-private:
-};
-
-
-class CheapCustomer : public Customer {
-public:
-    CheapCustomer(std::string name, int id);
-    std::vector<int> order(const std::vector<Dish> &menu);
-    std::string toString() const;
-    virtual Customer* clone();
-private:
-    bool ordered;
-};
-
-
-class SpicyCustomer : public Customer {
-public:
-    SpicyCustomer(std::string name, int id);
-    std::vector<int> order(const std::vector<Dish> &menu);
-    std::string toString() const;
-    virtual Customer* clone();
-private:
-    bool ordered;
-};
-
-
-class AlchoholicCustomer : public Customer {
-public:
-    AlchoholicCustomer(std::string name, int id);
-    std::vector<int> order(const std::vector<Dish> &menu);
-    std::string toString() const;
-    virtual Customer* clone();
-    void Sort();
-private:
-    std::vector<Dish> Drinks;
-    int current;
+    int capacity;
+    bool open;
+    std::vector<Customer*> customersList;
+    std::vector<OrderPair> orderList; //A list of pairs for each order in a table - (customer_id, Dish)
 };
 
 
 #endif
-
