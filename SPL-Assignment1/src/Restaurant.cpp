@@ -16,7 +16,7 @@ Restaurant::Restaurant(const string &configFilePath):Restaurant(){
     int count = 0;
     while(!inFile.eof()){
         getline(inFile,line);
-        if(line.size() == 0 )
+        if(line.empty())
             continue;
         else if(line[0] == '#'){
             count++;
@@ -97,7 +97,7 @@ void Restaurant::start(){
                     customersList.push_back(new AlchoholicCustomer(name,c_id));
                 c_id++;
             }
-            OpenTable *OT = new OpenTable(t_id,customersList);
+            BaseAction *OT = new OpenTable(t_id,customersList);
             OT->updateArgs(args);
             OT->act(me);
             actionsLog.push_back(OT);
@@ -109,7 +109,7 @@ void Restaurant::start(){
         }
         else if(action == "order"){
             int t_id = std::stoi(command.substr(0,command.length()));
-            Order *O=new Order(t_id);
+            BaseAction *O=new Order(t_id);
             O->updateArgs(args);
             O->act(me);
             actionsLog.push_back(O);
@@ -125,7 +125,7 @@ void Restaurant::start(){
             int des =std::stoi(command.substr(0,command.find_first_of(' ')));
             command = command.substr(command.find_first_of(' ')+1,command.length());
             int cus =std::stoi(command.substr(0,command.length()));
-            MoveCustomer *MC=new MoveCustomer(ori,des,cus);
+            BaseAction *MC=new MoveCustomer(ori,des,cus);
             MC->updateArgs(args);
             MC->act(me);
             actionsLog.push_back(MC);
@@ -137,7 +137,7 @@ void Restaurant::start(){
         }
         else if(action == "close"){
             int t_id =std::stoi(command.substr(0,command.length()));
-            Close *C=new Close(t_id);
+            BaseAction *C=new Close(t_id);
             C->updateArgs(args);
             C->act(me);
             actionsLog.push_back(C);
@@ -148,7 +148,7 @@ void Restaurant::start(){
             continue;
         }
         else if(action == "menu"){
-            PrintMenu *PM=new PrintMenu();
+            BaseAction *PM=new PrintMenu();
             PM->act(me);
             actionsLog.push_back(PM);
             cin >> command;
@@ -159,7 +159,7 @@ void Restaurant::start(){
         }
         else if(action == "status"){
             int t_id =std::stoi(command.substr(0,command.length()));
-            PrintTableStatus *Stat=new PrintTableStatus(t_id);
+            BaseAction *Stat=new PrintTableStatus(t_id);
             Stat->updateArgs(args);
             Stat->act(me);
             actionsLog.push_back(Stat);
@@ -170,7 +170,7 @@ void Restaurant::start(){
             continue;
         }
         else if(action == "log"){
-            PrintActionsLog *log=new PrintActionsLog();
+            BaseAction *log=new PrintActionsLog();
             log->act(me);
             actionsLog.push_back(log);
             cin >> command;
@@ -211,7 +211,8 @@ void Restaurant::copy(const Restaurant& other){
     open = other.open;
     for(int i = 0; i< other.tables.size(); i++)
         tables[i] = new Table(other.tables[i]->getCapacity());
-    menu = other.menu;
+    for (const auto &i : other.menu)
+        menu.emplace_back(i.getId(), i.getName(), i.getPrice(), i.getType());
     for(int i =0; i<other.actionsLog.size(); i++)
         actionsLog[i] = other.actionsLog[i]->clone();
 }
@@ -219,8 +220,8 @@ void Restaurant::copy(const Restaurant& other){
 void Restaurant::steal(Restaurant& other){
     open = other.open;
     tables = other.tables;
-    other.tables.clear();
-    menu = other.menu;
+    for (const auto &i : other.menu)
+        menu.emplace_back(i.getId(), i.getName(), i.getPrice(), i.getType());
     actionsLog = other.actionsLog;
 }
 //Clean
