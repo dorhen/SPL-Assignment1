@@ -1,7 +1,7 @@
 #include <iostream>
 #include "../include/Customer.h"
 
-Customer :: Customer(std :: string c_name, int c_id) : name(c_name), id(c_id), Strategy(){}
+Customer :: Customer(std :: string c_name, int c_id) : name(c_name), id(c_id){}
 
 
 std::string Customer :: getName() const{
@@ -35,6 +35,10 @@ std::vector<int> VegetarianCustomer :: order(const std::vector<Dish> &menu){
 std::string VegetarianCustomer :: toString() const{
     return std::to_string(this->getId()) + " " + this->getName();
 }
+Customer* VegetarianCustomer:: clone(){
+    Customer* c=new VegetarianCustomer(name,id);
+    return c;
+}
 
 
 
@@ -56,6 +60,10 @@ std::vector<int> CheapCustomer :: order(const std::vector<Dish> &menu){
 }
 std::string CheapCustomer :: toString() const {
     return std::to_string(this->getId()) + " " + this->getName();
+}
+Customer* CheapCustomer:: clone(){
+    Customer* c=new CheapCustomer(name,id);
+    return c;
 }
 
 
@@ -94,6 +102,10 @@ std::vector<int> SpicyCustomer :: order(const std::vector<Dish> &menu){
 }
 std::string SpicyCustomer :: toString() const{
     return std::to_string(this->getId()) + " " + this->getName();
+}
+Customer* SpicyCustomer:: clone(){
+    Customer* c=new SpicyCustomer(name,id);
+    return c;
 }
 
 
@@ -138,3 +150,8 @@ std::vector<int> AlchoholicCustomer :: order(const std::vector<Dish> &menu){
 std::string AlchoholicCustomer :: toString() const{
     return std::to_string(this->getId()) + " " + this->getName();
 }
+Customer* AlchoholicCustomer:: clone(){
+    Customer* c=new AlchoholicCustomer(name,id);
+    return c;
+}
+
