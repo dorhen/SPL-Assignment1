@@ -3,13 +3,13 @@
 #include <vector>
 
 //constructor
-Table::Table(int t_capacity): capacity(t_capacity), open(false) {}
+Table::Table(int t_capacity): capacity(t_capacity), open(false), customersList(), orderList() {}
 
 //rule of 5
 void Table:: copy(const Table& rhs){
     capacity=rhs.getCapacity();
     open = rhs.status();
-    for(size_t i=0;i<rhs.getCurrentSize();i++){
+    for(int i=0;i<rhs.getCurrentSize();i++){
         customersList.push_back(rhs.customersList[i]->clone());
     }
     for(auto &i : orderList)
@@ -36,7 +36,7 @@ Table::~Table(){
     clear();
 }
 //copy constructor
-Table::Table(const Table& rhs){
+Table::Table(const Table& rhs): capacity(), open(), customersList(), orderList(){
     copy(rhs);
 }
 //assignment operator
@@ -48,7 +48,7 @@ Table& Table::operator=(const Table& rhs) {
     return *this;
 }
 //move copy constructor
-Table::Table(Table&& other){
+Table::Table(Table&& other): capacity(), open(), customersList(), orderList(){
     steal(other);
 }
 //move assignment operator
@@ -140,8 +140,8 @@ std::vector<OrderPair> Table::removeOrders(int id){
     std::vector<OrderPair> idOrders;
     for(size_t i = 0; i< orderList.size(); i++){
         if(orderList[i].first == id){
-            idOrders.push_back(OrderPair(id,orderList[i].second));
-            orderList.erase(orderList.begin()+i);
+            idOrders.emplace_back(id,orderList[i].second);
+//            orderList.erase(orderList.begin()+i);
             i--;
         }
     }
