@@ -50,15 +50,15 @@ Restaurant::Restaurant(const string &configFilePath):Restaurant(){
             }
         }
         else{
-             string name = line.substr(0,line.find(','));
-             line = line.substr(line.find(',')+1);
-             string dishType = line.substr(0,line.find(','));
-             string numWord = line.substr(line.find(',')+1);
-             stringstream num1(numWord);
-             int price = 0;
-             num1 >> price;
-             menu.push_back(Dish(dishID,name,price,convert(dishType)));
-             dishID++;
+            string name = line.substr(0,line.find(','));
+            line = line.substr(line.find(',')+1);
+            string dishType = line.substr(0,line.find(','));
+            string numWord = line.substr(line.find(',')+1);
+            stringstream num1(numWord);
+            int price = 0;
+            num1 >> price;
+            menu.push_back(Dish(dishID,name,price,convert(dishType)));
+            dishID++;
         }
     }
     inFile.close();
@@ -179,8 +179,32 @@ void Restaurant::start(){
             args = command;
             continue;
         }
+        else if(action == "backup"){
+            BaseAction *BU= new BackupRestaurant();
+            BU->act(me);
+            actionsLog.push_back(BU);
+            cin >> command;
+            action = command.substr(0,command.find_first_of(' '));
+            command = command.substr(command.find_first_of(' ')+1,command.length());
+            args = command;
+            continue;
+        }
+        if(action == "restore"){
+            BaseAction *RR= new RestoreResturant();
+            RR->act(me);
+            cin >> command;
+            action = command.substr(0,command.find_first_of(' '));
+            command = command.substr(command.find_first_of(' ')+1,command.length());
+            args = command;
+            continue;
+        }
     }
-
+    BaseAction *CA= new CloseAll();
+    CA->act(me);
+    for (auto &action : actionsLog)
+        delete action;
+    for (auto &table : tables)
+        delete table;
 }
 
 int Restaurant::getNumOfTables() const{
@@ -249,7 +273,7 @@ Restaurant::~Restaurant(){
     actionsLog.clear();
 }
 //Deep copy c'tor
- Restaurant::Restaurant(const Restaurant& rhs){
+Restaurant::Restaurant(const Restaurant& rhs){
     this->copy(rhs);
 }
 //Copy assignment op'.
@@ -263,7 +287,7 @@ Restaurant& Restaurant::operator=(const Restaurant& rhs){
 
 }
 //Move
- Restaurant::Restaurant(Restaurant&& rhs){
+Restaurant::Restaurant(Restaurant&& rhs){
     steal(rhs);
 }
 //Move assignment op'.
