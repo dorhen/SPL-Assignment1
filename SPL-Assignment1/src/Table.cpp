@@ -2,33 +2,86 @@
 #include <iostream>
 #include <vector>
 
+//constructor
+Table::Table(int t_capacity): capacity(t_capacity), open(false), customersList(), orderList() {}
 
-Table::Table(int t_capacity): capacity(t_capacity), open(false) {}
-
+//rule of 5
+void Table:: copy(const Table& rhs){
+    capacity=rhs.getCapacity();
+    open = rhs.status();
+    for(int i=0;i<rhs.getCurrentSize();i++){
+        customersList.push_back(rhs.customersList[i]->clone());
+    }
+    for(auto &i : orderList)
+        orderList.emplace_back(i.first,i.second);
+}
+void Table:: clear(){
+    for (auto &i : customersList) {
+        delete i;
+    }
+    customersList.clear();
+    orderList.clear();
+}
+void Table::steal(Table& other){
+    capacity = other.capacity;
+    open=other.status();
+    customersList=other.customersList;
+    for(auto &i : orderList)
+        orderList.emplace_back(i.first,i.second);
+    other.customersList.clear();
+    other.getOrders().clear();
+}
+//distractor
+Table::~Table(){
+    clear();
+}
+//copy constructor
+Table::Table(const Table& rhs): capacity(), open(), customersList(), orderList(){
+    copy(rhs);
+}
+//assignment operator
+Table& Table::operator=(const Table& rhs) {
+    if (&rhs != this) {
+        clear();
+        copy(rhs);
+    }
+    return *this;
+}
+//move copy constructor
+Table::Table(Table&& other): capacity(), open(), customersList(), orderList(){
+    steal(other);
+}
+//move assignment operator
+Table& Table:: operator=(Table&& other){
+    clear();
+    steal(other);
+    return *this;
+}
+//methods
 int Table::getCapacity() const {
     return capacity;
 }
 
 void Table::addCustomer(Customer *customer) {
-customersList.push_back(customer);
+    customersList.push_back(customer);
 }
 
 void Table::removeCustomer(int id) {
     for (size_t i = 0; i < customersList.size(); i++) {
-        if ((*customersList[i]).getId() == id)
+        if (customersList[i]->getId() == id)
             customersList.erase(customersList.begin()+i);
     }
 }
 
 int Table::getCurrentSize() const {
-    return customersList.size();
+    return static_cast<int>(customersList.size());
 }
 
 Customer* Table::getCustomer(int id) {
     Customer* ans = nullptr;
-    for (size_t i = 0; i < customersList.size(); i++) {
-        if ((*customersList[i]).getId() == id)
-            ans = customersList[i];
+    for (auto &i : customersList) {
+        if ((*i).getId() == id)
+            ans = i;
     }
     return ans;
 }
@@ -46,14 +99,17 @@ std::vector<OrderPair>& Table::getOrders() {
 void Table::order(const std::vector<Dish> &menu) {
     std::vector<int> v;
     std::string s;
-    for (size_t i = 0; i < customersList.size(); i++) {
-        v = (*customersList[i]).order(menu);
-        for (size_t j = 0; j < v.size(); j++) {
-            s += customersList[i].getName() + " ordered" + menu[v[j]].getName() + "/n";
-            orderList.push_back(OrderPair(customersList[i].getId(), menu[v[j]]));
+    for (auto &i : customersList) {
+        v = (*i).order(menu);
+        for (int j : v) {
+            s += i->getName() + " ordered " + menu[j].getName() + '\n';
+            orderList.push_back(OrderPair(i->getId(), menu[j]));
         }
     }
-    std::cout << s << std::endl;
+    if(!s.empty()) {
+        s.erase(s.length() - 1);
+        std::cout << s << std::endl;
+    }
 }
 
 void Table::openTable() {
@@ -73,8 +129,8 @@ void Table::closeTable() {
 
 int Table::getBill() {
     int bill = 0;
-    for (size_t i = 0; i < orderList.size(); i++) {
-        bill += orderList[i].second.getPrice();
+    for (auto &i : orderList) {
+        bill += i.second.getPrice();
     }
     return bill;
 }
@@ -87,14 +143,30 @@ std::vector<OrderPair> Table::removeOrders(int id){
     std::vector<OrderPair> idOrders;
     for(size_t i = 0; i< orderList.size(); i++){
         if(orderList[i].first == id){
-            idOrders.push_back(OrderPair(id,orderList[i].second));
-            orderList.erase(orderList.begin()+i);
-            i--;
+            idOrders.emplace_back(id,orderList[i].second);
         }
     }
+    std::vector<OrderPair> &ref = orderList;
+    erase(ref,id);
+    return idOrders;
 }
 
 void Table::addOrder(OrderPair p){
     orderList.push_back(p);
+}
+bool Table::status() const{
+    return open;
+}
+
+void Table::erase(std::vector<OrderPair> &listRef, int id) {
+    std::vector<OrderPair> temp;
+    for(auto &i : listRef){
+        if(i.first == id)
+            continue;
+        temp.emplace_back(i.first,i.second);
+    }
+    listRef.clear();
+    for(auto &i : temp)
+        listRef.emplace_back(i.first,i.second);
 }
 

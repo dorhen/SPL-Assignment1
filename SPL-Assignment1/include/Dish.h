@@ -14,11 +14,14 @@ public:
     std::string getName() const;
     int getPrice() const;
     DishType getType() const;
+    std::string toString() const;
 private:
     const int id;
     const std::string name;
     const int price;
     const DishType type;
+
+    std::string typeToString() const;
 };
 
 
