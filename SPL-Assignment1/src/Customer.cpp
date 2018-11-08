@@ -154,12 +154,12 @@ int AlchoholicCustomer:: findMinimum(std::vector<Dish> &v){
     return id;
 }
 std::vector<int> AlchoholicCustomer :: order(const std::vector<Dish> &menu){
-    if(current>0){
-        if(current< static_cast<int>(Drinks.size())){
-            strategy[0]=Drinks[current].getId();
-            current++;
-        }
-        else strategy.clear();
+    if(current>0 && current< static_cast<int>(Drinks.size())){
+        strategy[0]=Drinks[current].getId();
+        current++;
+    }
+    else if(current >= static_cast<int>(Drinks.size())){
+        strategy.clear();
         return strategy;
     }
     for(int i=0 ; i <  static_cast<int>(menu.size()) ; i++){
@@ -189,4 +189,5 @@ void AlchoholicCustomer::erase(std::vector<Dish> &listRef, int index) {
     for(auto &i : temp)
         listRef.emplace_back(i.getId(),i.getName(),i.getPrice(),i.getType());
 }
+
 
