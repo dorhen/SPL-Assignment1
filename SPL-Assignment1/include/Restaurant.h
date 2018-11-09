@@ -25,7 +25,7 @@ public:
     const std::vector<BaseAction*>& getActionsLog() const; // Return a reference to the history of actions
     std::vector<Dish>& getMenu();
     virtual ~Restaurant();
-
+    void update(std::string &command, BaseAction *ba, std::string &args, std::string &action);
 private:
     bool open;
     std::vector<Table*> tables;

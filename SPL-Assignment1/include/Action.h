@@ -13,6 +13,8 @@ enum ActionStatus{
 //Forward declaration
 class Restaurant;
 
+extern Restaurant* backup;
+
 class BaseAction{
 public:
     BaseAction();
@@ -21,7 +23,10 @@ public:
     virtual void act(Restaurant& restaurant)=0;
     virtual std::string toString() const=0;
     virtual BaseAction* clone() const;
+    virtual void updateStatus(ActionStatus s);
+    virtual void updateErrorMsg(std::string msg);
     virtual ~BaseAction();
+
 
 protected:
     void complete();

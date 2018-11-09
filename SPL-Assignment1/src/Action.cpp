@@ -2,7 +2,6 @@
 #include "../include/Table.h"
 #include "../include/Restaurant.h"
 #include <iostream>
-extern Restaurant* backup;
 
 //BaseAction
 
@@ -28,17 +27,22 @@ std::string BaseAction::getArgs() const{
 std::string BaseAction::getErrorMsg() const {
     return this->errorMsg;
 }
+void BaseAction::updateErrorMsg(std::string msg) {
+    errorMsg = msg;
+}
+void BaseAction::updateStatus(ActionStatus s) {
+    status = s;
+}
 BaseAction* BaseAction::clone() const{
     return nullptr;
 }
 std::string BaseAction::toString() const {
     return "";
 }
-BaseAction::~BaseAction(){
-}
+BaseAction::~BaseAction()=default;
+
 void BaseAction::act(Restaurant &restaurant) {
 }
-
 
 
 //OpenTable
@@ -48,7 +52,10 @@ OpenTable::OpenTable(int id, std::vector<Customer *> &customersList) : BaseActio
 //Methods
 void OpenTable::act(Restaurant &restaurant) {
     Table *t = restaurant.getTable(this->tableId);
-    if (!t || t->isOpen()) {
+    int ocs=0;
+    for (char i : getArgs())
+        if(i == ',') ocs++;
+    if (!t || t->isOpen() || ocs > t->getCapacity()) {
         this->error("Table does not exist or is already open");
         std::cout << "Error: Table does not exist or is already open" << std::endl;
     }
@@ -69,6 +76,9 @@ BaseAction* OpenTable::clone() const{
     std::vector<Customer *> temp = customers;
     std::vector<Customer *> &ref = temp;
     BaseAction *a = new OpenTable(tableId,ref);
+    a->updateArgs(getArgs());
+    a->updateStatus(getStatus());
+    a->updateErrorMsg(getErrorMsg());
     return a;
 }
 
@@ -98,6 +108,9 @@ std::string Order::toString() const {
 }
 BaseAction* Order::clone() const{
     BaseAction *a = new Order(tableId);
+    a->updateArgs(getArgs());
+    a->updateStatus(getStatus());
+    a->updateErrorMsg(getErrorMsg());
     return a;
 }
 
@@ -121,6 +134,7 @@ void MoveCustomer::act(Restaurant &restaurant) {
         for (const auto &i : toMove)
             t2->addOrder(i);
         t1->removeCustomer(this->id);
+        if(t1->getCurrentSize() == 0) t1->closeTable();
         complete();
     }
 }
@@ -132,6 +146,9 @@ std::string MoveCustomer::toString() const {
 }
 BaseAction* MoveCustomer::clone() const{
     BaseAction *a = new MoveCustomer(srcTable,dstTable,id);
+    a->updateArgs(getArgs());
+    a->updateStatus(getStatus());
+    a->updateErrorMsg(getErrorMsg());
     return a;
 }
 
@@ -163,6 +180,9 @@ std::string Close::toString() const {
 }
 BaseAction* Close::clone() const{
     BaseAction *a = new Close(tableId);
+    a->updateArgs(getArgs());
+    a->updateStatus(getStatus());
+    a->updateErrorMsg(getErrorMsg());
     return a;
 }
 
@@ -189,6 +209,9 @@ std::string CloseAll::toString() const {
 }
 BaseAction* CloseAll::clone() const{
     BaseAction *a = new CloseAll();
+    a->updateArgs(getArgs());
+    a->updateStatus(getStatus());
+    a->updateErrorMsg(getErrorMsg());
     return a;
 }
 
@@ -201,7 +224,7 @@ PrintMenu::PrintMenu(): BaseAction() {}
 void PrintMenu::act(Restaurant &restaurant) {
     std::vector<Dish> menu = restaurant.getMenu();
     for (auto &i : menu)
-        i.toString();
+        std::cout << i.toString() << std::endl;
     complete();
 }
 std::string PrintMenu::toString() const {
@@ -209,6 +232,9 @@ std::string PrintMenu::toString() const {
 }
 BaseAction* PrintMenu::clone() const{
     BaseAction *a = new PrintMenu();
+    a->updateArgs(getArgs());
+    a->updateStatus(getStatus());
+    a->updateErrorMsg(getErrorMsg());
     return a;
 }
 
@@ -243,6 +269,9 @@ std::string PrintTableStatus::toString() const {
 }
 BaseAction* PrintTableStatus::clone() const{
     BaseAction *a = new PrintTableStatus(tableId);
+    a->updateArgs(getArgs());
+    a->updateStatus(getStatus());
+    a->updateErrorMsg(getErrorMsg());
     return a;
 }
 
@@ -264,6 +293,9 @@ std::string PrintActionsLog::toString() const {
 }
 BaseAction* PrintActionsLog::clone() const{
     BaseAction *a = new PrintActionsLog();
+    a->updateArgs(getArgs());
+    a->updateStatus(getStatus());
+    a->updateErrorMsg(getErrorMsg());
     return a;
 }
 
@@ -273,7 +305,8 @@ BaseAction* PrintActionsLog::clone() const{
 BackupRestaurant::BackupRestaurant(): BaseAction() {}
 //Methods
 void BackupRestaurant::act(Restaurant &restaurant) {
-    backup = new Restaurant(restaurant);
+    if(backup == nullptr)backup = new Restaurant(restaurant);
+    else *backup = restaurant;
     complete();
 }
 std::string BackupRestaurant::toString() const {
@@ -281,6 +314,9 @@ std::string BackupRestaurant::toString() const {
 }
 BaseAction* BackupRestaurant::clone() const{
     BaseAction *a = new BackupRestaurant();
+    a->updateArgs(getArgs());
+    a->updateStatus(getStatus());
+    a->updateErrorMsg(getErrorMsg());
     return a;
 }
 
@@ -290,8 +326,8 @@ RestoreResturant::RestoreResturant(): BaseAction(){}
 //Methods
 void RestoreResturant::act(Restaurant &restaurant) {
     if(backup == nullptr){
-        this->error("No backup avilable");
-        std::cout << "No backup avilable" << std::endl;
+        this->error("No backup available");
+        std::cout << "No backup available" << std::endl;
     }
     else {
         restaurant = *backup;
