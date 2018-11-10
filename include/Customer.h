@@ -28,7 +28,7 @@ public:
     Customer* clone();
 private:
     static std::vector<int> strategy;
-    static std::vector<int> ans;
+    std::vector<int> ans;
 };
 
 
