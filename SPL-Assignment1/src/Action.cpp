@@ -49,6 +49,7 @@ void BaseAction::act(Restaurant &restaurant) {
 
 //Constructor
 OpenTable::OpenTable(int id, std::vector<Customer *> &customersList) : BaseAction(), tableId(id), customers(customersList){}
+OpenTable::~OpenTable()=default;
 //Methods
 void OpenTable::act(Restaurant &restaurant) {
     Table *t = restaurant.getTable(this->tableId);
@@ -338,5 +339,6 @@ std::string RestoreResturant::toString() const {
     return "restore Completed";
 }
 BaseAction* RestoreResturant::clone() const{
-    return nullptr;
+    BaseAction *a = new RestoreResturant();
+    return a;
 }
