@@ -100,6 +100,10 @@ void SpicyCustomer:: setBool(bool t){
 }
 std::vector<int> SpicyCustomer :: order(const std::vector<Dish> &menu){
     if(ordered) {
+        if (strategy[1]==-1) {
+            ans.clear();
+            return ans;
+        }
         ans[0]=strategy[1];
         return ans;
     }
@@ -120,7 +124,7 @@ std::vector<int> SpicyCustomer :: order(const std::vector<Dish> &menu){
                 strategy[1] = i;
             }
         }
-        if (cheapest == -1 || exp == 0) {
+        if (exp == 0) {
             ans.clear();
             return ans;
         }
