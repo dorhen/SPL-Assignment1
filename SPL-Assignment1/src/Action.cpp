@@ -194,14 +194,12 @@ BaseAction* Close::clone() const{
 CloseAll::CloseAll(): BaseAction() {}
 //Methods
 void CloseAll::act(Restaurant &restaurant) {
-    Table *t = restaurant.getTable(0);
     int size = restaurant.getNumOfTables();
     for (int i = 0; i < size ; i++){
-        if(t->isOpen()){
+        if(restaurant.getTable(i)->isOpen()){
             Close c(i);
             c.act(restaurant);
         }
-        t = restaurant.getTable(i+1);
     }
     complete();
 }
