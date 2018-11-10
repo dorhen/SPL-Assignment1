@@ -115,7 +115,7 @@ std::vector<int> SpicyCustomer :: order(const std::vector<Dish> &menu){
                 exp = menu[i].getPrice();
                 strategy[0] = i;
             }
-            if ((menu[i].getPrice() < cheapest) || (cheapest == -1)) {
+            if (((menu[i].getPrice() < cheapest) || (cheapest == -1)) && (menu[i].getType() == BVG)) {
                 cheapest = menu[i].getPrice();
                 strategy[1] = i;
             }
