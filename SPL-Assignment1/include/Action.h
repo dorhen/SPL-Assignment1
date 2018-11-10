@@ -47,6 +47,7 @@ public:
     void act(Restaurant &restaurant);
     std::string toString() const;
     virtual BaseAction* clone() const;
+    virtual ~OpenTable();
 private:
     const int tableId;
     const std::vector<Customer *> customers;
