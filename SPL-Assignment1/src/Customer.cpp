@@ -24,6 +24,7 @@ Customer* Customer::clone() {
 }
 
 std::vector<int> VegetarianCustomer::strategy;
+std::vector<int> VegetarianCustomer::ans;
 
 VegetarianCustomer :: VegetarianCustomer(std::string name, int id): Customer(name, id){
 }
