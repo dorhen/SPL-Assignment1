@@ -55,7 +55,7 @@ public:
 private:
     bool ordered;
     static std::vector<int> strategy;
-    std::vector<int> ans;
+    static std::vector<int> ans;
 };
 
 
