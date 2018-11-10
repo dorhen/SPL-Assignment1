@@ -107,30 +107,12 @@ void Restaurant::start(){
             }
             BaseAction *ot = new OpenTable(t_id,customersList);
             update(cRef,ot,argsRef,aRef);
-            /*
-            OT->updateArgs(args);
-            OT->act(me);
-            actionsLog.push_back(OT);
-            getline(cin,command);
-            action = command.substr(0,command.find_first_of(' '));
-            command = command.substr(command.find_first_of(' ')+1,command.length());
-            args = command;
-             */
             continue;
         }
         else if(action == "order"){
             int t_id = std::stoi(command.substr(0,command.length()));
             BaseAction *o=new Order(t_id);
             update(cRef,o,argsRef,aRef);
-            /*
-            O->updateArgs(args);
-            O->act(me);
-            actionsLog.push_back(O);
-            getline(cin,command);
-            action = command.substr(0,command.find_first_of(' '));
-            command = command.substr(command.find_first_of(' ')+1,command.length());
-            args = command;
-             */
             continue;
         }
         else if(action == "move"){
@@ -141,104 +123,51 @@ void Restaurant::start(){
             int cus =std::stoi(command.substr(0,command.length()));
             BaseAction *mc=new MoveCustomer(ori,des,cus);
             update(cRef,mc,argsRef,aRef);
-            /*
-            MC->updateArgs(args);
-            MC->act(me);
-            actionsLog.push_back(MC);
-            getline(cin,command);
-            action = command.substr(0,command.find_first_of(' '));
-            command = command.substr(command.find_first_of(' ')+1,command.length());
-            args = command;
-             */
             continue;
         }
         else if(action == "close"){
             int t_id =std::stoi(command.substr(0,command.length()));
             BaseAction *c=new Close(t_id);
             update(cRef,c,argsRef,aRef);
-            /*
-            C->updateArgs(args);
-            C->act(me);
-            actionsLog.push_back(C);
-            getline(cin,command);
-            action = command.substr(0,command.find_first_of(' '));
-            command = command.substr(command.find_first_of(' ')+1,command.length());
-            args = command;
             continue;
-             */
         }
         else if(action == "menu"){
             BaseAction *pm=new PrintMenu();
             update(cRef,pm,argsRef,aRef);
-
-            /*
-            PM->act(me);
-            actionsLog.push_back(PM);
-            getline(cin,command);
-            action = command.substr(0,command.find_first_of(' '));
-            command = command.substr(command.find_first_of(' ')+1,command.length());
-            args = command;*/
             continue;
         }
         else if(action == "status"){
             int t_id =std::stoi(command.substr(0,command.length()));
             BaseAction *stat=new PrintTableStatus(t_id);
             update(cRef,stat,argsRef,aRef);
-            /*
-            Stat->updateArgs(args);
-            Stat->act(me);
-            actionsLog.push_back(Stat);
-            getline(cin,command);
-            action = command.substr(0,command.find_first_of(' '));
-            command = command.substr(command.find_first_of(' ')+1,command.length());
-            args = command;*/
             continue;
         }
         else if(action == "log"){
             BaseAction *log=new PrintActionsLog();
             update(cRef,log,argsRef,aRef);
-            /*
-            log->act(me);
-            actionsLog.push_back(log);
-            getline(cin,command);
-            action = command.substr(0,command.find_first_of(' '));
-            command = command.substr(command.find_first_of(' ')+1,command.length());
-            args = command;
-            continue;
-             */
         }
         else if(action == "backup"){
             BaseAction *bu= new BackupRestaurant();
+            actionsLog.push_back(bu);
             update(cRef,bu,argsRef,aRef);
-            /*
-            BU->act(me);
-            actionsLog.push_back(BU);
-            getline(cin,command);
-            action = command.substr(0,command.find_first_of(' '));
-            command = command.substr(command.find_first_of(' ')+1,command.length());
-            args = command;*/
             continue;
         }
         if(action == "restore"){
             BaseAction *rr= new RestoreResturant();
             update(cRef,rr,argsRef,aRef);
-            /*RR->act(me);
-            getline(cin,command);
-            action = command.substr(0,command.find_first_of(' '));
-            command = command.substr(command.find_first_of(' ')+1,command.length());
-            args = command;*/
             continue;
         }
     }
-    BaseAction *CA= new CloseAll();
-    CA->act(me);
+    BaseAction *ca= new CloseAll();
+    ca->act(me);
 }
 
 void Restaurant::update(std::string &command, BaseAction *ba, std::string &args, std::string &action){
     Restaurant &restRef = *this;
     ba->updateArgs(args);
-    this->actionsLog.push_back(ba);
     ba->act(restRef);
+    if(command != "backup")
+        this->actionsLog.push_back(ba);
     getline(cin,command);
     action = command.substr(0,command.find_first_of(' '));
     command = command.substr(command.find_first_of(' ')+1,command.length());
