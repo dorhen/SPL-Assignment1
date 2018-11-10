@@ -12,7 +12,7 @@ void Table:: copy(const Table& rhs){
     for(int i=0;i<rhs.getCurrentSize();i++){
         customersList.push_back(rhs.customersList[i]->clone());
     }
-    for(auto &i : orderList)
+    for(auto &i : rhs.orderList)
         orderList.emplace_back(i.first,i.second);
 }
 void Table:: clear(){
