@@ -16,6 +16,7 @@ int Dish::getPrice() const{
 DishType Dish::getType() const{
     return type;
 }
+//we added those
 std::string Dish::toString() const {
     return name + " " + typeToString() + " " +std::to_string(price) + "NIS";
 }
