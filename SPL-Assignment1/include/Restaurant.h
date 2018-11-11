@@ -28,12 +28,13 @@ public:
     void clean();
     void start();
     void update(std::string &command, BaseAction *ba, std::string &args, std::string &action);
-    DishType convert(std::string str);
 private:
     bool open;
     std::vector<Table*> tables;
     std::vector<Dish> menu;
     std::vector<BaseAction*> actionsLog;
+    //we added that
+    DishType convert(std::string str);
 };
 
 #endif
