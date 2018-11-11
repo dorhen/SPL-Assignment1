@@ -11,8 +11,10 @@ BaseAction::BaseAction() : errorMsg(""), status(PENDING), argsDelivered(""){}
 ActionStatus BaseAction::getStatus() const{
     return this->status;
 }
-void BaseAction::updateArgs(std::string args) {
-    this->argsDelivered = args;
+void BaseAction::act(Restaurant &restaurant) {
+}
+std::string BaseAction::toString() const {
+    return "";
 }
 void BaseAction::complete() {
     this->status = COMPLETED;
@@ -21,11 +23,13 @@ void BaseAction::error(std::string errorMsg){
     this->errorMsg = errorMsg;
     this->status = ERROR;
 }
-std::string BaseAction::getArgs() const{
-    return this->argsDelivered;
-}
 std::string BaseAction::getErrorMsg() const {
     return this->errorMsg;
+}
+
+//we added those
+std::string BaseAction::getArgs() const{
+    return this->argsDelivered;
 }
 void BaseAction::updateErrorMsg(std::string msg) {
     errorMsg = msg;
@@ -36,12 +40,9 @@ void BaseAction::updateStatus(ActionStatus s) {
 BaseAction* BaseAction::clone() const{
     return nullptr;
 }
-std::string BaseAction::toString() const {
-    return "";
-}
 BaseAction::~BaseAction()=default;
-
-void BaseAction::act(Restaurant &restaurant) {
+void BaseAction::updateArgs(std::string args) {
+    this->argsDelivered = args;
 }
 
 
@@ -49,7 +50,6 @@ void BaseAction::act(Restaurant &restaurant) {
 
 //Constructor
 OpenTable::OpenTable(int id, std::vector<Customer *> &customersList) : BaseAction(), tableId(id), customers(customersList){}
-OpenTable::~OpenTable()=default;
 //Methods
 void OpenTable::act(Restaurant &restaurant) {
     Table *t = restaurant.getTable(this->tableId);
@@ -73,6 +73,9 @@ std::string OpenTable::toString() const {
     else
         return "open " + this->getArgs() + " Completed";
 }
+
+//we added those
+OpenTable::~OpenTable()=default;
 BaseAction* OpenTable::clone() const{
     std::vector<Customer *> temp = customers;
     std::vector<Customer *> &ref = temp;
@@ -107,6 +110,8 @@ std::string Order::toString() const {
     else
         return "order " + this->getArgs() + " Completed" ;
 }
+
+//we added that
 BaseAction* Order::clone() const{
     BaseAction *a = new Order(tableId);
     a->updateArgs(getArgs());
@@ -145,6 +150,8 @@ std::string MoveCustomer::toString() const {
     else
         return "move " + this->getArgs() + " Completed" ;
 }
+
+//we added that
 BaseAction* MoveCustomer::clone() const{
     BaseAction *a = new MoveCustomer(srcTable,dstTable,id);
     a->updateArgs(getArgs());
@@ -179,6 +186,8 @@ std::string Close::toString() const {
     else
         return "close " + this->getArgs() + " Completed";
 }
+
+//we added that
 BaseAction* Close::clone() const{
     BaseAction *a = new Close(tableId);
     a->updateArgs(getArgs());
@@ -206,6 +215,8 @@ void CloseAll::act(Restaurant &restaurant) {
 std::string CloseAll::toString() const {
     return "closeall Completed";
 }
+
+//we added that
 BaseAction* CloseAll::clone() const{
     BaseAction *a = new CloseAll();
     a->updateArgs(getArgs());
@@ -229,6 +240,8 @@ void PrintMenu::act(Restaurant &restaurant) {
 std::string PrintMenu::toString() const {
     return "menu Completed";
 }
+
+//we added that
 BaseAction* PrintMenu::clone() const{
     BaseAction *a = new PrintMenu();
     a->updateArgs(getArgs());
@@ -266,6 +279,8 @@ void PrintTableStatus::act(Restaurant &restaurant) {
 std::string PrintTableStatus::toString() const {
     return "status " + this->getArgs() + " Completed";
 }
+
+//we added that
 BaseAction* PrintTableStatus::clone() const{
     BaseAction *a = new PrintTableStatus(tableId);
     a->updateArgs(getArgs());
@@ -290,6 +305,8 @@ void PrintActionsLog::act(Restaurant &restaurant) {
 std::string PrintActionsLog::toString() const {
     return "log Completed";
 }
+
+//we added that
 BaseAction* PrintActionsLog::clone() const{
     BaseAction *a = new PrintActionsLog();
     a->updateArgs(getArgs());
@@ -311,6 +328,8 @@ void BackupRestaurant::act(Restaurant &restaurant) {
 std::string BackupRestaurant::toString() const {
     return "backup Completed";
 }
+
+//we added that
 BaseAction* BackupRestaurant::clone() const{
     BaseAction *a = new BackupRestaurant();
     a->updateArgs(getArgs());
@@ -336,6 +355,8 @@ void RestoreResturant::act(Restaurant &restaurant) {
 std::string RestoreResturant::toString() const {
     return "restore Completed";
 }
+
+//we added that
 BaseAction* RestoreResturant::clone() const{
     BaseAction *a = new RestoreResturant();
     return a;
