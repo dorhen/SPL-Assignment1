@@ -1,4 +1,5 @@
 #ifndef ACTION_H_
+
 #define ACTION_H_
 
 #include <string>
@@ -12,23 +13,37 @@ enum ActionStatus{
 //Forward declaration
 class Restaurant;
 
+extern Restaurant* backup;
+
 class BaseAction{
 public:
     BaseAction();
     ActionStatus getStatus() const;
-    void updateArgs(std::string args);
     virtual void act(Restaurant& restaurant)=0;
     virtual std::string toString() const=0;
+    
+    //we added those
+    virtual BaseAction* clone() const;
+    virtual void updateStatus(ActionStatus s);
+    virtual void updateErrorMsg(std::string msg);
+    virtual ~BaseAction();
+    void updateArgs(std::string args);
+
+
 
 protected:
     void complete();
     void error(std::string errorMsg);
-    std::string getArgs() const;
     std::string getErrorMsg() const;
+    
+    //we added that
+    std::string getArgs() const;
 
 private:
     std::string errorMsg;
     ActionStatus status;
+    
+    //we added that
     std::string argsDelivered;
 };
 
@@ -38,6 +53,10 @@ public:
     OpenTable(int id, std::vector<Customer *> &customersList);
     void act(Restaurant &restaurant);
     std::string toString() const;
+    
+    //we added those
+    virtual BaseAction* clone() const;
+    virtual ~OpenTable();
 private:
     const int tableId;
     const std::vector<Customer *> customers;
@@ -49,6 +68,9 @@ public:
     Order(int id);
     void act(Restaurant &restaurant);
     std::string toString() const;
+    
+    //we added that
+    virtual BaseAction* clone() const;
 private:
     const int tableId;
 };
@@ -59,6 +81,9 @@ public:
     MoveCustomer(int src, int dst, int customerId);
     void act(Restaurant &restaurant);
     std::string toString() const;
+    
+    //we added that
+    virtual BaseAction* clone() const;
 private:
     const int srcTable;
     const int dstTable;
@@ -71,6 +96,9 @@ public:
     Close(int id);
     void act(Restaurant &restaurant);
     std::string toString() const;
+    
+    //we added that
+    virtual BaseAction* clone() const;
 private:
     const int tableId;
 };
@@ -81,6 +109,9 @@ public:
     CloseAll();
     void act(Restaurant &restaurant);
     std::string toString() const;
+    
+    //we added that
+    virtual BaseAction* clone() const;
 private:
 };
 
@@ -90,6 +121,9 @@ public:
     PrintMenu();
     void act(Restaurant &restaurant);
     std::string toString() const;
+    
+    //we added that
+    virtual BaseAction* clone() const;
 private:
 };
 
@@ -99,6 +133,9 @@ public:
     PrintTableStatus(int id);
     void act(Restaurant &restaurant);
     std::string toString() const;
+    
+    //we added that
+    virtual BaseAction* clone() const;
 private:
     const int tableId;
 };
@@ -109,6 +146,9 @@ public:
     PrintActionsLog();
     void act(Restaurant &restaurant);
     std::string toString() const;
+    
+    //we added that
+    virtual BaseAction* clone() const;
 private:
 };
 
@@ -118,6 +158,9 @@ public:
     BackupRestaurant();
     void act(Restaurant &restaurant);
     std::string toString() const;
+    
+    //we added that
+    virtual BaseAction* clone() const;
 private:
 };
 
@@ -127,6 +170,9 @@ public:
     RestoreResturant();
     void act(Restaurant &restaurant);
     std::string toString() const;
+    
+    //we added that
+    virtual BaseAction* clone() const;
 
 };
 

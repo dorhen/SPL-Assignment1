@@ -1,0 +1,22 @@
+#Number of tables.
+13
+#Tables
+3,0,7,3,0,4,6,6,6,7,3,4,8
+
+
+
+#Menu
+Salad,VEG,39
+
+W,ALC,25
+Cola,BVG,9
+Water,BVG,9
+Pasta,VEG,40
+Chilli,SPC,25
+Beer,ALC,15
+Water,BVG,8
+Wine,ALC,16
+Pepper,SPC,35
+Fanta,BVG,10
+Best Meal Ever,SPC,50
+Worst Meal EVER,VEG,45
