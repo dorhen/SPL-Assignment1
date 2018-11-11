@@ -2,27 +2,27 @@
 #include "../include/Customer.h"
 
 Customer :: Customer(std :: string c_name, int c_id) : name(c_name), id(c_id){}
-
-
+std::vector<int> Customer::order(const std::vector<Dish> &menu) {
+    std::vector<int> a;
+    return a;
+}
+std::string Customer::toString() const {
+    return "";
+}
 std::string Customer :: getName() const{
     return name;
 }
 int Customer :: getId() const{
     return id;
 }
+//we added those
 Customer::~Customer() {
-}
-std::string Customer::toString() const {
-    return "";
-}
-std::vector<int> Customer::order(const std::vector<Dish> &menu) {
-    std::vector<int> a;
-    return a;
 }
 Customer* Customer::clone() {
     return nullptr;
 }
 
+//static variables declaration
 std::vector<int> VegetarianCustomer::strategy;
 std::vector<int> VegetarianCustomer::ans;
 
@@ -52,17 +52,15 @@ std::vector<int> VegetarianCustomer :: order(const std::vector<Dish> &menu){
 std::string VegetarianCustomer :: toString() const{
     return std::to_string(this->getId()) + " " + this->getName();
 }
+//we added that
 Customer* VegetarianCustomer:: clone(){
     VegetarianCustomer* c=new VegetarianCustomer(getName(), getId());
     return c;
 }
 
-
+//static variable declaration
 std::vector<int> CheapCustomer::strategy;
 CheapCustomer :: CheapCustomer(std::string name, int id) : Customer(name, id), ordered(false){
-}
-void CheapCustomer:: setBool(bool t){
-    ordered=t;
 }
 std::vector<int> CheapCustomer :: order(const std::vector<Dish> &menu){
     if((!ordered) && (!menu.empty())){
@@ -83,20 +81,21 @@ std::vector<int> CheapCustomer :: order(const std::vector<Dish> &menu){
 std::string CheapCustomer :: toString() const {
     return std::to_string(this->getId()) + " " + this->getName();
 }
+//we added those
 Customer* CheapCustomer:: clone(){
     CheapCustomer* c=new CheapCustomer(getName(), getId());
     c->setBool(ordered);
     return c;
 }
+void CheapCustomer:: setBool(bool t){
+    ordered=t;
+}
 
 
-
+//static variable declaration
 std::vector<int> SpicyCustomer::strategy;
 SpicyCustomer :: SpicyCustomer(std::string name, int id) : Customer(name, id), ordered(false) {
     ans.push_back(-1);
-}
-void SpicyCustomer:: setBool(bool t){
-    ordered=t;
 }
 std::vector<int> SpicyCustomer :: order(const std::vector<Dish> &menu){
     if(ordered) {
@@ -136,42 +135,21 @@ std::vector<int> SpicyCustomer :: order(const std::vector<Dish> &menu){
 std::string SpicyCustomer :: toString() const{
     return std::to_string(this->getId()) + " " + this->getName();
 }
+//we added those
 Customer* SpicyCustomer:: clone(){
     SpicyCustomer* c=new SpicyCustomer(getName(), getId());
     c->setBool(ordered);
     return c;
 }
+void SpicyCustomer:: setBool(bool t){
+    ordered=t;
+}
 
 
-
+//static variable declaration
 std::vector<int> AlchoholicCustomer::strategy;
 AlchoholicCustomer :: AlchoholicCustomer(std::string name, int id) : Customer(name, id), current(0) {
     ans.push_back(1);
-}
-void AlchoholicCustomer :: Sort(){
-    std::vector<int> Sorted;
-    int min;
-    std::vector<Dish> &ref = Alcs;
-    while(!Alcs.empty()){
-        min=findMinimum(ref);
-        Sorted.push_back(strategy[min]);
-        erase(Alcs,min);
-        strategy.erase(strategy.begin()+min);
-    }
-    for(size_t i=0 ; i<Sorted.size();i++){
-        strategy.push_back(Sorted[i]);
-    }
-}
-int AlchoholicCustomer:: findMinimum(std::vector<Dish> &v){
-    int min=v[0].getPrice();
-    int id=0;
-    for(int i=1;i< static_cast<int>(v.size());i++){
-        if(v[i].getPrice()<min){
-            min=v[i].getPrice();
-            id=i;
-        }
-    }
-    return id;
 }
 std::vector<int> AlchoholicCustomer :: order(const std::vector<Dish> &menu){
     if(strategy.size()==0){
@@ -198,6 +176,33 @@ std::vector<int> AlchoholicCustomer :: order(const std::vector<Dish> &menu){
 }
 std::string AlchoholicCustomer :: toString() const{
     return std::to_string(this->getId()) + " " + this->getName();
+}
+
+//we added those
+void AlchoholicCustomer :: Sort(){
+    std::vector<int> Sorted;
+    int min;
+    std::vector<Dish> &ref = Alcs;
+    while(!Alcs.empty()){
+        min=findMinimum(ref);
+        Sorted.push_back(strategy[min]);
+        erase(Alcs,min);
+        strategy.erase(strategy.begin()+min);
+    }
+    for(size_t i=0 ; i<Sorted.size();i++){
+        strategy.push_back(Sorted[i]);
+    }
+}
+int AlchoholicCustomer:: findMinimum(std::vector<Dish> &v){
+    int min=v[0].getPrice();
+    int id=0;
+    for(int i=1;i< static_cast<int>(v.size());i++){
+        if(v[i].getPrice()<min){
+            min=v[i].getPrice();
+            id=i;
+        }
+    }
+    return id;
 }
 Customer* AlchoholicCustomer:: clone(){
     Customer* c=new AlchoholicCustomer(getName(), getId());
