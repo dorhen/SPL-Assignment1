@@ -161,7 +161,28 @@ void Restaurant::start(){
     BaseAction *ca= new CloseAll();
     ca->act(me);
 }
-
+int Restaurant::getNumOfTables() const{
+    return (int)tables.size();
+}
+Table* Restaurant::getTable(int ind){
+    if(ind>= static_cast<int>(tables.size()))return nullptr;
+    return tables[ind];
+}
+const std::vector<BaseAction*>& Restaurant::getActionsLog() const{
+    const std::vector<BaseAction*>& ref = actionsLog;
+    return ref;
+}
+//we added those
+vector<Dish>& Restaurant::getMenu(){
+    vector<Dish> &dishRef = menu;
+    return dishRef;
+}
+DishType Restaurant::convert(string str){
+    if(str == "VEG") return VEG;
+    else if(str == "SPC") return SPC;
+    else if(str == "BVG") return BVG;
+    else return ALC;
+}
 void Restaurant::update(std::string &command, BaseAction *ba, std::string &args, std::string &action){
     Restaurant &restRef = *this;
     ba->updateArgs(args);
@@ -173,33 +194,6 @@ void Restaurant::update(std::string &command, BaseAction *ba, std::string &args,
     command = command.substr(command.find_first_of(' ')+1,command.length());
     args = command;
 }
-
-
-int Restaurant::getNumOfTables() const{
-    return (int)tables.size();
-}
-
-vector<Dish>& Restaurant::getMenu(){
-    vector<Dish> &dishRef = menu;
-    return dishRef;
-}
-
-Table* Restaurant::getTable(int ind){
-    if(ind>= static_cast<int>(tables.size()))return nullptr;
-    return tables[ind];
-}
-const std::vector<BaseAction*>& Restaurant::getActionsLog() const{
-    const std::vector<BaseAction*>& ref = actionsLog;
-    return ref;
-}
-
-DishType Restaurant::convert(string str){
-    if(str == "VEG") return VEG;
-    else if(str == "SPC") return SPC;
-    else if(str == "BVG") return BVG;
-    else return ALC;
-}
-
 
 //Rule of 5
 //Copy
