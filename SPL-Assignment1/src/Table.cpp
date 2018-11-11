@@ -4,7 +4,77 @@
 
 //constructor
 Table::Table(int t_capacity): capacity(t_capacity), open(false), customersList(), orderList() {}
+//methods
+int Table::getCapacity() const {
+    return capacity;
+}
+void Table::addCustomer(Customer *customer) {
+    customersList.push_back(customer);
+}
 
+void Table::removeCustomer(int id) {
+    for (size_t i = 0; i < customersList.size(); i++) {
+        if (customersList[i]->getId() == id)
+            customersList.erase(customersList.begin()+i);
+    }
+}
+Customer* Table::getCustomer(int id) {
+    Customer* ans = nullptr;
+    for (auto &i : customersList) {
+        if ((*i).getId() == id)
+            ans = i;
+    }
+    return ans;
+}
+
+std::vector<Customer *>& Table::getCustomers() {
+    std::vector < Customer * > &ans = customersList;
+    return ans;
+}
+
+std::vector<OrderPair>& Table::getOrders() {
+    std::vector <OrderPair> &ans = orderList;
+    return ans;
+}
+
+void Table::order(const std::vector<Dish> &menu) {
+    std::vector<int> v;
+    std::string s;
+    for (auto &i : customersList) {
+        v = (*i).order(menu);
+        for (int j : v) {
+            s += i->getName() + " ordered " + menu[j].getName() + '\n';
+            orderList.push_back(OrderPair(i->getId(), menu[j]));
+        }
+    }
+    if(!s.empty()) {
+        s.erase(s.length() - 1);
+        std::cout << s << std::endl;
+    }
+}
+void Table::openTable() {
+    open = true;
+}
+void Table::closeTable() {
+    orderList.clear();
+    Customer *c;
+    for(auto &customer : customersList){
+        c = customer;
+        delete c;
+    }
+    customersList.clear();
+    open = false;
+}
+int Table::getBill() {
+    int bill = 0;
+    for (auto &i : orderList) {
+        bill += i.second.getPrice();
+    }
+    return bill;
+}
+bool Table::isOpen() {
+    return open;
+}
 //rule of 5
 void Table:: copy(const Table& rhs){
     capacity=rhs.getCapacity();
@@ -57,88 +127,6 @@ Table& Table:: operator=(Table&& other){
     steal(other);
     return *this;
 }
-//methods
-int Table::getCapacity() const {
-    return capacity;
-}
-
-void Table::addCustomer(Customer *customer) {
-    customersList.push_back(customer);
-}
-
-void Table::removeCustomer(int id) {
-    for (size_t i = 0; i < customersList.size(); i++) {
-        if (customersList[i]->getId() == id)
-            customersList.erase(customersList.begin()+i);
-    }
-}
-
-int Table::getCurrentSize() const {
-    return static_cast<int>(customersList.size());
-}
-
-Customer* Table::getCustomer(int id) {
-    Customer* ans = nullptr;
-    for (auto &i : customersList) {
-        if ((*i).getId() == id)
-            ans = i;
-    }
-    return ans;
-}
-
-std::vector<Customer *>& Table::getCustomers() {
-    std::vector < Customer * > &ans = customersList;
-    return ans;
-}
-
-std::vector<OrderPair>& Table::getOrders() {
-    std::vector <OrderPair> &ans = orderList;
-    return ans;
-}
-
-void Table::order(const std::vector<Dish> &menu) {
-    std::vector<int> v;
-    std::string s;
-    for (auto &i : customersList) {
-        v = (*i).order(menu);
-        for (int j : v) {
-            s += i->getName() + " ordered " + menu[j].getName() + '\n';
-            orderList.push_back(OrderPair(i->getId(), menu[j]));
-        }
-    }
-    if(!s.empty()) {
-        s.erase(s.length() - 1);
-        std::cout << s << std::endl;
-    }
-}
-
-void Table::openTable() {
-    open = true;
-}
-
-void Table::closeTable() {
-    orderList.clear();
-    Customer *c;
-    for(auto &customer : customersList){
-        c = customer;
-        delete c;
-    }
-    customersList.clear();
-    open = false;
-}
-
-int Table::getBill() {
-    int bill = 0;
-    for (auto &i : orderList) {
-        bill += i.second.getPrice();
-    }
-    return bill;
-}
-
-bool Table::isOpen() {
-    return open;
-}
-
 std::vector<OrderPair> Table::removeOrders(int id){
     std::vector<OrderPair> idOrders;
     for(size_t i = 0; i< orderList.size(); i++){
@@ -150,14 +138,15 @@ std::vector<OrderPair> Table::removeOrders(int id){
     erase(ref,id);
     return idOrders;
 }
-
+int Table::getCurrentSize() const {
+    return static_cast<int>(customersList.size());
+}
 void Table::addOrder(OrderPair p){
     orderList.push_back(p);
 }
 bool Table::status() const{
     return open;
 }
-
 void Table::erase(std::vector<OrderPair> &listRef, int id) {
     std::vector<OrderPair> temp;
     for(auto &i : listRef){
