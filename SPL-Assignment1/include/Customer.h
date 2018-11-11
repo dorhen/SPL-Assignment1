@@ -10,9 +10,10 @@ public:
     Customer(std::string c_name, int c_id);
     virtual std::vector<int> order(const std::vector<Dish> &menu)=0;
     virtual std::string toString() const = 0;
-    virtual Customer* clone();
     std::string getName() const;
     int getId() const;
+    //we added those
+    virtual Customer* clone();
     virtual ~Customer();
 private:
     const std::string name;
@@ -25,8 +26,10 @@ public:
     VegetarianCustomer(std::string name, int id);
     std::vector<int> order(const std::vector<Dish> &menu);
     std::string toString() const;
+    //we added that
     Customer* clone();
 private:
+    //we added those
     static std::vector<int> strategy;
     static std::vector<int> ans;
 };
@@ -37,9 +40,11 @@ public:
     CheapCustomer(std::string name, int id);
     std::vector<int> order(const std::vector<Dish> &menu);
     std::string toString() const;
+    //we added those
     Customer* clone();
     void setBool(bool t);
 private:
+    //we added those
     bool ordered;
     static std::vector<int> strategy;
 };
@@ -50,9 +55,11 @@ public:
     SpicyCustomer(std::string name, int id);
     std::vector<int> order(const std::vector<Dish> &menu);
     std::string toString() const;
+    //we added those
     Customer* clone();
     void setBool(bool t);
 private:
+    //we added those
     bool ordered;
     static std::vector<int> strategy;
     std::vector<int> ans;
@@ -64,10 +71,12 @@ public:
     AlchoholicCustomer(std::string name, int id);
     std::vector<int> order(const std::vector<Dish> &menu);
     std::string toString() const;
+    //we added those
     Customer* clone();
     void Sort();
     int findMinimum(std::vector<Dish> &v);
 private:
+    //we added those
     static std::vector<int> strategy;
     std::vector<Dish> Alcs;
     int current;
