@@ -21,23 +21,26 @@ public:
     void closeTable();
     int getBill();
     bool isOpen();
+    //we added those
     int getCurrentSize() const;
     std::vector<OrderPair> removeOrders(int id);
     void addOrder(OrderPair P);
     bool status() const;
+    //rule of 5
     void copy(const Table& rhs);
     void clear();
     void steal(Table& other);
-    Table(Table&& other);
     virtual ~Table();
     Table(const Table& rhs);
     Table& operator=(const Table& rhs);
+    Table(Table&& other);
     Table& operator=(Table&& other);
 private:
     int capacity;
     bool open;
     std::vector<Customer*> customersList;
     std::vector<OrderPair> orderList; //A list of pairs for each order in a table - (customer_id, Dish)
+    //we added that
     void erase(std::vector<OrderPair> &listRef, int index);
 };
 
