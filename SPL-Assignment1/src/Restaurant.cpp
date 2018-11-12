@@ -6,6 +6,7 @@ using namespace std;
 
 Restaurant::Restaurant(): open(true), tables(), menu(), actionsLog() {}
 
+//Config file parser.
 Restaurant::Restaurant(const string &configFilePath):Restaurant(){
     ifstream inFile;
     inFile.open(configFilePath);
@@ -20,9 +21,9 @@ Restaurant::Restaurant(const string &configFilePath):Restaurant(){
         if(line.empty() || line[0] == '\r')
             continue;
         else if(line[0] == '#'){
-            count++;
             continue;
         }
+        count++;
         if(count == 1) {
 
             stringstream num(line);
@@ -184,12 +185,12 @@ DishType Restaurant::convert(string str){
     else if(str == "BVG") return BVG;
     else return ALC;
 }
+//Same operation for (almost) all actions.
 void Restaurant::update(std::string &command, BaseAction *ba, std::string &args, std::string &action){
     Restaurant &restRef = *this;
     ba->updateArgs(args);
     ba->act(restRef);
-    //if(command != "backup")
-        this->actionsLog.push_back(ba);
+    this->actionsLog.push_back(ba);
     getline(cin,command);
     action = command.substr(0,command.find_first_of(' '));
     command = command.substr(command.find_first_of(' ')+1,command.length());
