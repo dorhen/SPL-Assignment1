@@ -3,6 +3,12 @@
 #include "../include/Restaurant.h"
 #include <iostream>
 
+//We added a clone method to each action in order to copy actions more efficiently.
+//Meaning that for example in Restaurant's copy method we want to create new instances of actions in the memory
+//and when we iterate over the actions, instead of checking for each action what type of actions is it, 
+//we'll call "clone" method for BaseAction that will access the virtual table of the current object and will look for the proper
+//clone method for the instance type we want to copy.
+
 //BaseAction
 
 //Constructor
@@ -40,6 +46,7 @@ void BaseAction::updateStatus(ActionStatus s) {
 BaseAction* BaseAction::clone() const{ //Not relevant as we consider BaseAction abstract.
     return nullptr;
 }
+//In order to generate vtable properly. (Otherwise we had a warning about it)
 BaseAction::~BaseAction()=default;
 void BaseAction::updateArgs(std::string args) {
     this->argsDelivered = args;
@@ -54,7 +61,7 @@ OpenTable::OpenTable(int id, std::vector<Customer *> &customersList) : BaseActio
 void OpenTable::act(Restaurant &restaurant) {
     Table *t = restaurant.getTable(this->tableId);
     int ocs=0;
-    for (char i : getArgs())
+    for (char i : getArgs())//The number of commas equals to the number of customers. (Assuming correct input)
         if(i == ',') ocs++;
     if (!t || t->isOpen() || ocs > t->getCapacity()) {
         this->error("Table does not exist or is already open");
@@ -321,8 +328,8 @@ BaseAction* PrintActionsLog::clone() const{
 BackupRestaurant::BackupRestaurant(): BaseAction() {}
 //Methods
 void BackupRestaurant::act(Restaurant &restaurant) {
-    if(backup == nullptr)backup = new Restaurant(restaurant);
-    else *backup = restaurant;
+    if(backup == nullptr)backup = new Restaurant(restaurant); //If the user did not backup yet we need to allocate the memory for the backup.
+    else *backup = restaurant; //Otherwise we just overright.
     complete();
 }
 std::string BackupRestaurant::toString() const {
