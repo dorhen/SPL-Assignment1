@@ -19,7 +19,7 @@ void Table::removeCustomer(int id) {
     }
 }
 Customer* Table::getCustomer(int id) {
-    Customer* ans = nullptr;
+    Customer* ans = nullptr;//if there is no customer with the same id
     for (auto &i : customersList) {
         if ((*i).getId() == id)
             ans = i;
@@ -28,7 +28,7 @@ Customer* Table::getCustomer(int id) {
 }
 
 std::vector<Customer *>& Table::getCustomers() {
-    std::vector < Customer * > &ans = customersList;
+    std::vector < Customer * > &ans = customersList;//need to return a reference
     return ans;
 }
 
@@ -41,14 +41,14 @@ void Table::order(const std::vector<Dish> &menu) {
     std::vector<int> v;
     std::string s;
     for (auto &i : customersList) {
-        v = (*i).order(menu);
+        v = (*i).order(menu);//take order from each customer
         for (int j : v) {
             s += i->getName() + " ordered " + menu[j].getName() + '\n';
-            orderList.push_back(OrderPair(i->getId(), menu[j]));
+            orderList.push_back(OrderPair(i->getId(), menu[j]));//save the orders
         }
     }
     if(!s.empty()) {
-        s.erase(s.length() - 1);
+        s.erase(s.length() - 1);//removing the'/n' from the ens of s
         std::cout << s << std::endl;
     }
 }
@@ -60,7 +60,8 @@ void Table::closeTable() {
     Customer *c;
     for(auto &customer : customersList){
         c = customer;
-        delete c;
+        delete c;//free the memory of each customer and then closing the table.
+        //we decided that class table will be responsible of the customers memory
     }
     customersList.clear();
     open = false;
@@ -68,7 +69,7 @@ void Table::closeTable() {
 int Table::getBill() {
     int bill = 0;
     for (auto &i : orderList) {
-        bill += i.second.getPrice();
+        bill += i.second.getPrice();//counting each order
     }
     return bill;
 }
@@ -80,7 +81,7 @@ void Table:: copy(const Table& rhs){
     capacity=rhs.getCapacity();
     open = rhs.status();
     for(int i=0;i<rhs.getCurrentSize();i++){
-        customersList.push_back(rhs.customersList[i]->clone());
+        customersList.push_back(rhs.customersList[i]->clone());//making a copy of each customer, using inheritence of clone
     }
     for(auto &i : rhs.orderList)
         orderList.emplace_back(i.first,i.second);
@@ -130,7 +131,7 @@ Table& Table:: operator=(Table&& other){
 std::vector<OrderPair> Table::removeOrders(int id){
     std::vector<OrderPair> idOrders;
     for(size_t i = 0; i< orderList.size(); i++){
-        if(orderList[i].first == id){
+        if(orderList[i].first == id){//take all the orders from that id
             idOrders.emplace_back(id,orderList[i].second);
         }
     }
@@ -150,12 +151,11 @@ bool Table::status() const{
 void Table::erase(std::vector<OrderPair> &listRef, int id) {
     std::vector<OrderPair> temp;
     for(auto &i : listRef){
-        if(i.first == id)
+        if(i.first == id)//coping only the pairs we want
             continue;
         temp.emplace_back(i.first,i.second);
     }
     listRef.clear();
-    for(auto &i : temp)
+    for(auto &i : temp)//put them back in the vactor
         listRef.emplace_back(i.first,i.second);
 }
-
