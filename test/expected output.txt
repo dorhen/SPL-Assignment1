@@ -1,0 +1,35 @@
+Or ordered Pepper
+Dan ordered Pepper
+Dor ordered Beer
+Daniel ordered Beer
+Yulia ordered Beer
+DanielK ordered Pepper
+Table 0:open
+Customers:
+0 Or
+1 Dan
+Orders:
+Pepper 40 0
+Pepper 40 1
+Total bill: 80NIS
+Table 1:open
+Customers:
+2 Dor
+3 Daniel
+4 Yulia
+5 Linoy
+6 DanielK
+Orders:
+Beer 15 2
+Beer 15 3
+Beer 15 4
+Pepper 40 6
+Total bill: 85NIS
+Table 0:open
+Customers:
+0 Or
+Orders:
+Pepper 40 0
+Total bill: 40NIS
+Table 0:closed
+Table 1 was closed: Total Bill: 165NIS

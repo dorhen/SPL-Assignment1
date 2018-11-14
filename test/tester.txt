@@ -1,0 +1,12 @@
+open 0 Or,spc Dan,spc
+open 1 Dor,alc Daniel,chp Yulia,alc Linoy,veg DanielK,spc
+order 0
+order 1
+status 0
+status 1
+move 0 1 1
+status 0
+move 0 1 0
+status 0
+order 1
+closeall

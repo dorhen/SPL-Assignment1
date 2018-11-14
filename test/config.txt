@@ -1,0 +1,7 @@
+#ma kore
+#misada hadasha
+3
+4,10,10
+Pepper,SPC,40
+Salad,VEG,20
+Beer,ALC,15
