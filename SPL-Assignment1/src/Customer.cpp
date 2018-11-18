@@ -16,8 +16,8 @@ int Customer :: getId() const{
     return id;
 }
 //we added those
-Customer::~Customer(){ //a virtual D'ctor that will be overload
-}
+Customer::~Customer()=default; //a virtual D'ctor for vtable reference.
+
 Customer* Customer::clone() {//virtual fuction that will be overload
     return nullptr;
 }
@@ -63,7 +63,7 @@ std::vector<int> CheapCustomer::strategy;
 CheapCustomer :: CheapCustomer(std::string name, int id) : Customer(name, id), ordered(false){
 }
 std::vector<int> CheapCustomer :: order(const std::vector<Dish> &menu){
-    if((!ordered) && (!menu.empty())){//this customer orders only once, so need to check if he already ordered and if there is no dish then he wont order
+    if(strategy.empty() && (!menu.empty())){//if we didnt find the min yet and if there is no dish then he wont order
         int cheapest = -1;
         strategy.push_back(-1);
         for(int i=0 ; i < static_cast<int>(menu.size()) ; i++){//find the cheapest dish
@@ -72,10 +72,12 @@ std::vector<int> CheapCustomer :: order(const std::vector<Dish> &menu){
                 strategy[0] = i;
             }
         }
-        ordered=true;
-        return strategy;
     }
-    strategy.clear();//if he already ordered so he wont order again
+    if(ordered || menu.empty()){
+        std::vector<int> i;//if he already ordered so he wont order again
+        return i;
+    }
+    ordered=true;
     return strategy;
 }
 std::string CheapCustomer :: toString() const {
